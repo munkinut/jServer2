@@ -26,7 +26,7 @@ public class ListenerManager extends Thread {
     @SuppressWarnings("rawtypes")
 	public ListenerManager() {
         listeners = new Hashtable();
-        running = new Boolean(false);
+        running = false;
         initLogging();
     }
     
@@ -98,7 +98,7 @@ public class ListenerManager extends Thread {
             service.addServiceListener(sli);
             ListenerThread lt = new ListenerThread(port, service);
             synchronized (listeners) {
-                listeners.put(new Integer(port), lt);
+                listeners.put(port, lt);
             }
             lt.start();
         }
@@ -111,7 +111,7 @@ public class ListenerManager extends Thread {
     public void removeListener(int port) throws ListenerManagerException {
         logger.fine("Removing listener from port " + port + " ...");
         synchronized (listeners) {
-            ListenerThreadInterface lt = (ListenerThreadInterface)listeners.remove(new Integer(port));
+            ListenerThreadInterface lt = (ListenerThreadInterface)listeners.remove(port);
             lt.kill();
         }
     }
@@ -121,7 +121,8 @@ public class ListenerManager extends Thread {
         logger.fine("Loading service " + serviceName + "...");
         try {
             Class c = Class.forName(serviceName);
-            ServiceInterface service = (ServiceInterface)c.newInstance();
+            @SuppressWarnings("deprecation")
+			ServiceInterface service = (ServiceInterface)c.newInstance();
             return service;
         }
         catch (ClassNotFoundException cnfe) {
