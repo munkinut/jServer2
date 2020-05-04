@@ -6,11 +6,6 @@ package net.munki.jServer;
  * Created on 19 May 2003, 16:03
  */
 
-/**
- *
- * @author  Warren Milburn
- */
-
 import java.io.IOException;
 // import java.io.PrintStream;
 // import java.io.File;
@@ -24,6 +19,7 @@ import java.util.Vector;
 import java.util.logging.Logger;
 import net.munki.util.string.StringTool;
 
+@SuppressWarnings("SynchronizeOnNonFinalField")
 public class ListenerThread extends Thread implements ListenerThreadInterface {
     
     public static final int TIMEOUT = 15000;
@@ -43,7 +39,7 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
     
     public ListenerThread() throws ListenerThreadException {
         initLogging();
-        initConnectionCount(0);
+        initConnectionCount();
         initSocket(DEFAULT_PORT);
         initConnectionManagement();
         initService(new DefaultService());
@@ -52,7 +48,7 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
     
     public ListenerThread(int port) throws ListenerThreadException {
         initLogging();
-        initConnectionCount(0);
+        initConnectionCount();
         initSocket(port);
         initConnectionManagement();
         initService(new DefaultService());
@@ -61,7 +57,7 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
     
     public ListenerThread(ServiceInterface service) throws ListenerThreadException {
         initLogging();
-        initConnectionCount(0);
+        initConnectionCount();
         initSocket(DEFAULT_PORT);
         initConnectionManagement();
         initService(service);
@@ -70,7 +66,7 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
     
     public ListenerThread(int port, ServiceInterface service) throws ListenerThreadException {
         initLogging();
-        initConnectionCount(0);
+        initConnectionCount();
         initSocket(port);
         initConnectionManagement();
         initService(service);
@@ -87,11 +83,8 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
         socket = new ServerSocket(port);
         socket.setSoTimeout(TIMEOUT);
         }
-        catch (IOException ioe) {
+        catch (IOException | SecurityException ioe) {
             throw new ListenerThreadException(ioe);
-        }
-        catch (SecurityException se) {
-            throw new ListenerThreadException(se);
         }
     }
     
@@ -108,8 +101,8 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
         running = Boolean.FALSE;
     }
     
-    private void initConnectionCount(int i) {
-        connectionCount = i;
+    private void initConnectionCount() {
+        connectionCount = 0;
     }
     
     @SuppressWarnings("unused")
@@ -135,13 +128,9 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
             catch (SocketTimeoutException ste) {
                 logger.fine(ste.getMessage());
             }
-            catch (IOException ioe) {
+            catch (IOException | SecurityException ioe) {
                 logger.warning(ioe.getMessage());
-            }
-            catch (SecurityException se) {
-                logger.warning(se.getMessage());
-            }
-            finally {
+            } finally {
                 cleanup();
             }
         }
@@ -183,7 +172,7 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
         }
     }
     
-    private void startService(Socket client) throws IOException {
+    private void startService(Socket client) {
         if (connectionsAvailable()) {
             logger.info(StringTool.cat(new String[] {
                 "Connection starting for ",

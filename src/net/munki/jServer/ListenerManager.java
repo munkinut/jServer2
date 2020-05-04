@@ -6,20 +6,16 @@ package net.munki.jServer;
  * Created on 21 May 2003, 15:39
  */
 
-/**
- *
- * @author  Warren Milburn
- */
-
 import java.util.Hashtable;
 // import java.io.IOException;
 import java.io.PrintStream;
 import java.util.logging.Logger;
 
+@SuppressWarnings("SynchronizeOnNonFinalField")
 public class ListenerManager extends Thread {
     
     @SuppressWarnings("rawtypes")
-	private Hashtable listeners;
+	private final Hashtable listeners;
     private Boolean running;
     private Logger logger;
     
@@ -61,7 +57,7 @@ public class ListenerManager extends Thread {
                 ListenerThread lt = (ListenerThread)listeners.get(key);
                 if (!lt.isAlive()) {
                     listeners.remove(key);
-                    logger.info("Listener thread on port " + key.intValue() + " removed ...");
+                    logger.info("Listener thread on port " + key + " removed ...");
                 }
             }
         }
@@ -108,7 +104,7 @@ public class ListenerManager extends Thread {
         }
     }
     
-    public void removeListener(int port) throws ListenerManagerException {
+    public void removeListener(int port) {
         logger.fine("Removing listener from port " + port + " ...");
         synchronized (listeners) {
             ListenerThreadInterface lt = (ListenerThreadInterface)listeners.remove(port);
@@ -129,13 +125,9 @@ public class ListenerManager extends Thread {
             logger.warning("Failed to load service " + serviceName + " ...");
             throw new ListenerManagerException("The service class " + serviceName + ".class could not be found.", cnfe);
         }
-        catch (IllegalAccessException iae) {
+        catch (IllegalAccessException | InstantiationException iae) {
             logger.warning("Failed to load service " + serviceName + " ...");
             throw new ListenerManagerException("The service class " + serviceName + ".class could not be instantiated.", iae);
-        }
-        catch (InstantiationException ie) {
-            logger.warning("Failed to load service " + serviceName + " ...");
-            throw new ListenerManagerException("The service class " + serviceName + ".class could not be instantiated.", ie);
         }
     }
     
@@ -149,7 +141,7 @@ public class ListenerManager extends Thread {
                 ListenerThread lt = (ListenerThread)listeners.get(key);
                 lt.kill();
                 listeners.remove(key);
-                logger.info("Listener thread on port " + key.intValue() + " removed ...");
+                logger.info("Listener thread on port " + key + " removed ...");
             }
         }
     }

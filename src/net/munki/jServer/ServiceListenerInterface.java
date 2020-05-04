@@ -12,5 +12,5 @@ package net.munki.jServer;
  */
 public interface ServiceListenerInterface {
     
-    public void notify(Object source, Object message);
+    void notify(Object source, Object message);
 }

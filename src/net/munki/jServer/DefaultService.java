@@ -6,11 +6,6 @@ package net.munki.jServer;
  * Created on 20 May 2003, 18:36
  */
 
-/**
- *
- * @author  Warren Milburn
- */
-
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.BufferedWriter;

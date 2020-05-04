@@ -6,11 +6,6 @@ package net.munki.jServer;
  * Created on 20 May 2003, 18:36
  */
 
-/**
- *
- * @author  Warren Milburn
- */
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -20,12 +15,11 @@ import java.io.PrintStream;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+@SuppressWarnings("unused")
 public class PingPongService implements ServiceInterface {
     
     private Logger logger;
-	@SuppressWarnings("unused")
-	private PrintStream out;
-    
+
     public PingPongService() {
         initLogging();
     }
@@ -45,7 +39,7 @@ public class PingPongService implements ServiceInterface {
             pw = new PrintWriter(bw);
             pw.println("Connected to " + getServiceName() + " ...");
             pw.flush();
-            String s = null;
+            String s;
             while ((s = br.readLine()) != null) {
                 if (s.equals("PING")) {
                     pw.println("PONG");
@@ -57,13 +51,9 @@ public class PingPongService implements ServiceInterface {
             pw.flush();
             Thread.sleep(1000);
         }
-        catch (InterruptedException ie) {
+        catch (InterruptedException | IOException ie) {
             logger.warning(ie.toString());
-        }
-        catch (IOException ioe) {
-            logger.warning(ioe.toString());
-        }
-        finally {
+        } finally {
             try {
                 if (pw != null) pw.close();
                 if (bw != null) bw.close();
@@ -85,7 +75,6 @@ public class PingPongService implements ServiceInterface {
     }
     
     public void setOutput(PrintStream ps) {
-        out = ps;
     }
     
     public void addServiceListener(ServiceListenerInterface sli) {

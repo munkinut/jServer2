@@ -5,6 +5,7 @@ import jargs.gnu.CmdLineParser;
 public class Server {
     
     private static final String DEFAULT_SERVICE = "net.munki.jServer.DefaultService";
+    //private static final String DEFAULT_SERVICE = "net.munki.jServer.PingPongService";
     private static int port = 12321;
 
     private static final ListenerManager LM = new ListenerManager();

@@ -8,7 +8,7 @@ public class StringTool {
     }
 
     public static String cat(String[] strings) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (String s : strings) {
             if (s != null) sb.append(s);
         }

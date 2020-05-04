@@ -6,11 +6,6 @@ package net.munki.jServer;
  * Created on 21 May 2003, 11:23
  */
 
-/**
- *
- * @author  Warren Milburn
- */
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -18,10 +13,11 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.logging.Logger;
 
+@SuppressWarnings("SynchronizeOnNonFinalField")
 public class ConnectionThread extends Thread implements ConnectionThreadInterface {
     
-    private ServiceInterface service;
-    private Socket client;
+    private final ServiceInterface service;
+    private final Socket client;
     private Boolean running;
     private java.util.logging.Logger logger;
     

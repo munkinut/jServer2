@@ -11,11 +11,13 @@ package net.munki.jServer;
  * @author  Warren Milburn
  */
 
+@SuppressWarnings("EmptyMethod")
 public interface ServiceInterface {
     
-    public abstract String getServiceName();
-    public abstract String getServiceDescription();
-    public abstract void setOutput(java.io.PrintStream ps);
-    public abstract void serve(java.io.InputStream i, java.io.OutputStream o);
-    public abstract void addServiceListener(ServiceListenerInterface sli);
+    String getServiceName();
+    String getServiceDescription();
+    void setOutput(java.io.PrintStream ps);
+    void serve(java.io.InputStream i, java.io.OutputStream o);
+    @SuppressWarnings("EmptyMethod")
+    void addServiceListener(ServiceListenerInterface sli);
 }

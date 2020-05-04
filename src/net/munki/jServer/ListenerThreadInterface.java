@@ -12,6 +12,6 @@ package net.munki.jServer;
  *
  */
 public interface ListenerThreadInterface {
-    public abstract void run();
-    public abstract void kill();
+    void run();
+    void kill();
 }
