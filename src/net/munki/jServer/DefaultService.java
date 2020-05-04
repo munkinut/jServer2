@@ -42,7 +42,7 @@ public class DefaultService implements ServiceInterface {
             pw = new PrintWriter(new BufferedWriter(osw));
             pw.println("Connected to " + getServiceName() + " ...");
             pw.flush();
-            for (int j = 0; j < 20; j++) {
+            for (int j = 0; j < 10; j++) {
                 pw.println(j);
                 pw.flush();
                 Thread.sleep(1000);
