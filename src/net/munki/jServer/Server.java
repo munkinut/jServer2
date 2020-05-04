@@ -1,7 +1,6 @@
 package net.munki.jServer;
 
 import jargs.gnu.CmdLineParser;
-// import net.munki.util.string.StringTool;
 
 public class Server {
     
@@ -63,7 +62,7 @@ public class Server {
     }
     
     private static void exit(int exitStatus) {
-        System.exit(0);
+        System.exit(exitStatus);
     }
     
     private static void addDefaultService() {
