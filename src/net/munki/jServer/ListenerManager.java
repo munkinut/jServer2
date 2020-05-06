@@ -6,30 +6,31 @@ package net.munki.jServer;
  * Created on 21 May 2003, 15:39
  */
 
-import java.util.Hashtable;
-// import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Hashtable;
 import java.util.logging.Logger;
+
+// import java.io.IOException;
 
 @SuppressWarnings("SynchronizeOnNonFinalField")
 public class ListenerManager extends Thread {
-    
+
     @SuppressWarnings("rawtypes")
-	private final Hashtable listeners;
+    private final Hashtable listeners;
     private Boolean running;
     private Logger logger;
-    
+
     @SuppressWarnings("rawtypes")
-	public ListenerManager() {
+    public ListenerManager() {
         listeners = new Hashtable();
         running = false;
         initLogging();
     }
-    
+
     private void initLogging() {
         logger = Logger.getLogger(this.getClass().getName());
     }
-    
+
     public void run() {
         setRunning(true);
         logger.info("Listener manager running ...");
@@ -39,22 +40,21 @@ public class ListenerManager extends Thread {
                 try {
                     logger.info("Listener manager waiting ...");
                     this.wait();
-                }
-                catch (InterruptedException ie) {
+                } catch (InterruptedException ie) {
                     logger.info("Listener manager interrupted ...");
                 }
             }
         }
     }
-    
+
     @SuppressWarnings("rawtypes")
-	private void skimListeners() {
+    private void skimListeners() {
         logger.info("Skimming listeners ...");
         synchronized (listeners) {
             java.util.Enumeration keys = listeners.keys();
             while (keys.hasMoreElements()) {
-                Integer key = (Integer)keys.nextElement();
-                ListenerThread lt = (ListenerThread)listeners.get(key);
+                Integer key = (Integer) keys.nextElement();
+                ListenerThread lt = (ListenerThread) listeners.get(key);
                 if (!lt.isAlive()) {
                     listeners.remove(key);
                     logger.info("Listener thread on port " + key + " removed ...");
@@ -62,30 +62,29 @@ public class ListenerManager extends Thread {
             }
         }
     }
-    
+
     private void setRunning(boolean run) {
         if (run) {
             synchronized (running) {
                 running = Boolean.TRUE;
                 logger.info("Running set to true ...");
             }
-        }
-        else {
+        } else {
             synchronized (running) {
                 running = Boolean.FALSE;
                 logger.info("Running set to false ...");
             }
         }
     }
-    
+
     private boolean isRunning() {
         synchronized (running) {
             return running.equals(Boolean.TRUE);
         }
     }
-    
+
     @SuppressWarnings("unchecked")
-	public void addListener(int port, String serviceName, ServiceListenerInterface sli, PrintStream output) throws ListenerManagerException {
+    public void addListener(int port, String serviceName, ServiceListenerInterface sli, PrintStream output) throws ListenerManagerException {
         try {
             logger.info("Adding listener for on port " + port + " ...");
             ServiceInterface service = loadService(serviceName);
@@ -97,60 +96,57 @@ public class ListenerManager extends Thread {
                 listeners.put(port, lt);
             }
             lt.start();
-        }
-        catch (ListenerThreadException ioe) {
+        } catch (ListenerThreadException ioe) {
             logger.warning("Failed to add listener for " + serviceName + "on port " + port + " ...");
             throw new ListenerManagerException("The listener thread for service " + serviceName + " on port " + port + " could not be started.", ioe);
         }
     }
-    
+
     public void removeListener(int port) {
         logger.info("Removing listener from port " + port + " ...");
         synchronized (listeners) {
-            ListenerThreadInterface lt = (ListenerThreadInterface)listeners.remove(port);
+            ListenerThreadInterface lt = (ListenerThreadInterface) listeners.remove(port);
             lt.kill();
         }
     }
-    
+
     @SuppressWarnings("rawtypes")
-	private ServiceInterface loadService(String serviceName) throws ListenerManagerException {
+    private ServiceInterface loadService(String serviceName) throws ListenerManagerException {
         logger.info("Loading service " + serviceName + "...");
         try {
             Class c = Class.forName(serviceName);
             @SuppressWarnings("deprecation")
-			ServiceInterface service = (ServiceInterface)c.newInstance();
+            ServiceInterface service = (ServiceInterface) c.newInstance();
             return service;
-        }
-        catch (ClassNotFoundException cnfe) {
+        } catch (ClassNotFoundException cnfe) {
             logger.warning("Failed to load service " + serviceName + " ...");
             throw new ListenerManagerException("The service class " + serviceName + ".class could not be found.", cnfe);
-        }
-        catch (IllegalAccessException | InstantiationException iae) {
+        } catch (IllegalAccessException | InstantiationException iae) {
             logger.warning("Failed to load service " + serviceName + " ...");
             throw new ListenerManagerException("The service class " + serviceName + ".class could not be instantiated.", iae);
         }
     }
-    
+
     @SuppressWarnings("rawtypes")
-	private void killListeners() {
+    private void killListeners() {
         logger.info("Killing listeners ...");
         synchronized (listeners) {
             java.util.Enumeration keys = listeners.keys();
             while (keys.hasMoreElements()) {
-                Integer key = (Integer)keys.nextElement();
-                ListenerThread lt = (ListenerThread)listeners.get(key);
+                Integer key = (Integer) keys.nextElement();
+                ListenerThread lt = (ListenerThread) listeners.get(key);
                 lt.kill();
                 listeners.remove(key);
                 logger.info("Listener thread on port " + key + " removed ...");
             }
         }
     }
-    
+
     public synchronized void kill() {
         logger.info("Kill requested for ListenerManager ...");
         killListeners();
         setRunning(false);
         interrupt();
     }
-    
+
 }

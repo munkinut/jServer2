@@ -6,26 +6,23 @@ package net.munki.jServer;
  * Created on 20 May 2003, 18:36
  */
 
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.BufferedWriter;
-import java.io.PrintWriter;
-// import java.io.PrintStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.logging.Logger;
 
+// import java.io.PrintStream;
+
 public class DefaultService implements ServiceInterface {
-    
+
     private Logger logger;
-    
+
     public DefaultService() {
         initLogging();
     }
-    
+
     private void initLogging() {
         logger = Logger.getLogger(this.getClass().getName());
     }
-    
+
     public void serve(java.io.InputStream i, java.io.OutputStream o) {
         logger.info(getServiceName() + " running ...");
         InputStreamReader isr = null;
@@ -45,35 +42,32 @@ public class DefaultService implements ServiceInterface {
             pw.println("Disconnecting from " + getServiceName() + " ...");
             pw.flush();
             Thread.sleep(1000);
-        }
-        catch (InterruptedException ie) {
+        } catch (InterruptedException ie) {
             logger.warning(ie.toString());
-        }
-        finally {
+        } finally {
             try {
                 if (pw != null) pw.close();
                 if (osw != null) osw.close();
                 if (isr != null) isr.close();
                 logger.info(getServiceName() + " finished ...");
-            }
-            catch (IOException ioe) {
+            } catch (IOException ioe) {
                 logger.warning(ioe.toString());
             }
         }
     }
-    
+
     public String getServiceName() {
         return "Default Service";
     }
-    
+
     public String getServiceDescription() {
         return "Demo service - counts from 0 to 19";
     }
-    
+
     public void addServiceListener(ServiceListenerInterface sli) {
     }
-    
+
     public void setOutput(java.io.PrintStream ps) {
     }
-    
+
 }

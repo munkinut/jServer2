@@ -9,9 +9,9 @@ package net.munki.jServer;
 
 /**
  * @author Warren Milburn
- *
  */
 public interface ListenerThreadInterface {
     void run();
+
     void kill();
 }

@@ -7,15 +7,16 @@
 package net.munki.jServer;
 
 /**
- *
- * @author  Warren Milburn
+ * @author Warren Milburn
  */
 public class EmbeddedServerRunner {
-    
-    /** Creates a new instance of TestEmbeddedServer */
+
+    /**
+     * Creates a new instance of TestEmbeddedServer
+     */
     public EmbeddedServerRunner() {
     }
-    
+
     /**
      * @param args the command line arguments
      */
@@ -23,5 +24,5 @@ public class EmbeddedServerRunner {
         EmbeddedServer es = new EmbeddedServer();
         es.start();
     }
-    
+
 }

@@ -1,6 +1,8 @@
 package net.munki.util.string;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 public class StringTool {
 
@@ -15,7 +17,7 @@ public class StringTool {
         return sb.toString();
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public static String[] uncat(String string) {
         List list = new ArrayList();
         StringTokenizer st = new StringTokenizer(string);
@@ -25,7 +27,7 @@ public class StringTool {
         Object[] objects = list.toArray();
         String[] arguments = new String[objects.length];
         for (int i = 0; i < objects.length; i++) {
-            arguments[i] = (String)objects[i];
+            arguments[i] = (String) objects[i];
         }
         return arguments;
     }

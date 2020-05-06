@@ -6,28 +6,22 @@ package net.munki.jServer;
  * Created on 20 May 2003, 18:36
  */
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.BufferedWriter;
-import java.io.PrintWriter;
-import java.io.PrintStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.logging.Logger;
 
 @SuppressWarnings("unused")
 public class PingPongService implements ServiceInterface {
-    
+
     private Logger logger;
 
     public PingPongService() {
         initLogging();
     }
-    
+
     private void initLogging() {
         logger = Logger.getLogger(this.getClass().getName());
     }
-    
+
     public void serve(java.io.InputStream i, java.io.OutputStream o) {
         logger.info("Service " + getServiceName() + " running ...");
         BufferedReader br = null;
@@ -50,8 +44,7 @@ public class PingPongService implements ServiceInterface {
             pw.println("Disconnecting from " + getServiceName() + " ...");
             pw.flush();
             Thread.sleep(1000);
-        }
-        catch (InterruptedException | IOException ie) {
+        } catch (InterruptedException | IOException ie) {
             logger.warning(ie.toString());
         } finally {
             try {
@@ -59,8 +52,7 @@ public class PingPongService implements ServiceInterface {
                 if (bw != null) bw.close();
                 if (br != null) br.close();
                 logger.info("Service " + getServiceName() + " finished ...");
-            }
-            catch (IOException ioe) {
+            } catch (IOException ioe) {
                 logger.warning(ioe.toString());
             }
         }
@@ -69,15 +61,15 @@ public class PingPongService implements ServiceInterface {
     public String getServiceName() {
         return "Ping Pong Service";
     }
-    
+
     public String getServiceDescription() {
         return "Returns a PONG for a PING.";
     }
-    
+
     public void setOutput(PrintStream ps) {
     }
-    
+
     public void addServiceListener(ServiceListenerInterface sli) {
     }
-    
+
 }

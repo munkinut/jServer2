@@ -9,33 +9,34 @@ package net.munki.jServer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-// import java.io.PrintStream;
 import java.net.Socket;
 import java.util.logging.Logger;
 
+// import java.io.PrintStream;
+
 @SuppressWarnings("SynchronizeOnNonFinalField")
 public class ConnectionThread extends Thread implements ConnectionThreadInterface {
-    
+
     private final ServiceInterface service;
     private final Socket client;
     private Boolean running;
     private java.util.logging.Logger logger;
-    
+
     public ConnectionThread(Socket c, ServiceInterface s) {
         service = s;
         client = c;
         initLogging();
         initRunning();
     }
-    
+
     private void initLogging() {
         logger = Logger.getLogger(this.getClass().getName());
     }
-    
+
     private void initRunning() {
         running = Boolean.FALSE;
     }
-    
+
     public void run() {
         setRunning(true);
         InputStream i = null;
@@ -46,17 +47,14 @@ public class ConnectionThread extends Thread implements ConnectionThreadInterfac
                 i = client.getInputStream();
                 o = client.getOutputStream();
                 service.serve(i, o);
-            }
-            catch (IOException ioe) {
+            } catch (IOException ioe) {
                 logger.warning(ioe.toString());
-            }
-            finally {
+            } finally {
                 try {
                     if (i != null) i.close();
                     if (o != null) o.close();
                     logger.info("Client " + client.getInetAddress().getHostAddress() + " disconnected ...");
-                }
-                catch (IOException ioe) {
+                } catch (IOException ioe) {
                     logger.warning(ioe.toString());
                 }
             }
@@ -66,20 +64,19 @@ public class ConnectionThread extends Thread implements ConnectionThreadInterfac
             this.notifyAll();
         }
     }
-    
+
     private void setRunning(boolean run) {
         if (run) {
             synchronized (running) {
                 running = Boolean.TRUE;
             }
-        }
-        else {
+        } else {
             synchronized (running) {
                 running = Boolean.FALSE;
             }
         }
     }
-    
+
     public synchronized void kill() {
         String serviceName = "";
         if (service != null) serviceName = service.getServiceName();
@@ -87,5 +84,5 @@ public class ConnectionThread extends Thread implements ConnectionThreadInterfac
         setRunning(false);
         interrupt();
     }
-    
+
 }

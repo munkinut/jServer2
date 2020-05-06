@@ -7,10 +7,9 @@
 package net.munki.jServer;
 
 /**
- *
- * @author  Warren Milburn
+ * @author Warren Milburn
  */
 public interface ServiceListenerInterface {
-    
+
     void notify(Object source, Object message);
 }
