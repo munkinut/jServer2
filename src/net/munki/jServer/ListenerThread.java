@@ -126,7 +126,7 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
                 startService(client);
             }
             catch (SocketTimeoutException ste) {
-                logger.fine(ste.getMessage());
+                logger.info(ste.getMessage());
             }
             catch (IOException | SecurityException ioe) {
                 logger.warning(ioe.getMessage());
@@ -155,13 +155,13 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
         if (run) {
             synchronized (running) {
                 running = Boolean.TRUE;
-                logger.fine("Running set to true ...");
+                logger.info("Running set to true ...");
             }
         }
         else {
             synchronized (running) {
                 running = Boolean.FALSE;
-                logger.fine("Running set to false ...");
+                logger.info("Running set to false ...");
             }
         }
     }
@@ -198,7 +198,7 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
     
     @SuppressWarnings("unchecked")
 	private void addConnection(ConnectionThread ct) {
-        logger.fine("Adding connection to list...");
+        logger.info("Adding connection to list...");
         synchronized (connections) {
             connections.add(ct);
         }
@@ -206,7 +206,7 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
     }
     
     private void removeConnection(ConnectionThread ct) {
-        logger.fine("Removing connection from list...");
+        logger.info("Removing connection from list...");
         synchronized (connections) {
             connections.remove(ct);
         }
@@ -222,7 +222,7 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
     }
     
     private void cleanup() {
-        logger.fine("Cleaning up connections ...");
+        logger.info("Cleaning up connections ...");
         synchronized (connections) {
             for (int i = 0; i < connections.size(); i++) {
                 ConnectionThread c = (ConnectionThread)connections.elementAt(i);

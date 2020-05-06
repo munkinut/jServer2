@@ -32,16 +32,16 @@ public class ListenerManager extends Thread {
     
     public void run() {
         setRunning(true);
-        logger.fine("Listener manager running ...");
+        logger.info("Listener manager running ...");
         while (isRunning()) {
             skimListeners();
             synchronized (this) {
                 try {
-                    logger.fine("Listener manager waiting ...");
+                    logger.info("Listener manager waiting ...");
                     this.wait();
                 }
                 catch (InterruptedException ie) {
-                    logger.fine("Listener manager interrupted ...");
+                    logger.info("Listener manager interrupted ...");
                 }
             }
         }
@@ -49,7 +49,7 @@ public class ListenerManager extends Thread {
     
     @SuppressWarnings("rawtypes")
 	private void skimListeners() {
-        logger.fine("Skimming listeners ...");
+        logger.info("Skimming listeners ...");
         synchronized (listeners) {
             java.util.Enumeration keys = listeners.keys();
             while (keys.hasMoreElements()) {
@@ -67,13 +67,13 @@ public class ListenerManager extends Thread {
         if (run) {
             synchronized (running) {
                 running = Boolean.TRUE;
-                logger.fine("Running set to true ...");
+                logger.info("Running set to true ...");
             }
         }
         else {
             synchronized (running) {
                 running = Boolean.FALSE;
-                logger.fine("Running set to false ...");
+                logger.info("Running set to false ...");
             }
         }
     }
@@ -87,7 +87,7 @@ public class ListenerManager extends Thread {
     @SuppressWarnings("unchecked")
 	public void addListener(int port, String serviceName, ServiceListenerInterface sli, PrintStream output) throws ListenerManagerException {
         try {
-            logger.fine("Adding listener for on port " + port + " ...");
+            logger.info("Adding listener for on port " + port + " ...");
             ServiceInterface service = loadService(serviceName);
             if (output != null) service.setOutput(output);
             else service.setOutput(System.out);
@@ -105,7 +105,7 @@ public class ListenerManager extends Thread {
     }
     
     public void removeListener(int port) {
-        logger.fine("Removing listener from port " + port + " ...");
+        logger.info("Removing listener from port " + port + " ...");
         synchronized (listeners) {
             ListenerThreadInterface lt = (ListenerThreadInterface)listeners.remove(port);
             lt.kill();
@@ -114,7 +114,7 @@ public class ListenerManager extends Thread {
     
     @SuppressWarnings("rawtypes")
 	private ServiceInterface loadService(String serviceName) throws ListenerManagerException {
-        logger.fine("Loading service " + serviceName + "...");
+        logger.info("Loading service " + serviceName + "...");
         try {
             Class c = Class.forName(serviceName);
             @SuppressWarnings("deprecation")
@@ -133,7 +133,7 @@ public class ListenerManager extends Thread {
     
     @SuppressWarnings("rawtypes")
 	private void killListeners() {
-        logger.fine("Killing listeners ...");
+        logger.info("Killing listeners ...");
         synchronized (listeners) {
             java.util.Enumeration keys = listeners.keys();
             while (keys.hasMoreElements()) {

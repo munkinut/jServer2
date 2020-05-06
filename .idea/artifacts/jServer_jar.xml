@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="jServer:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/jServer_jar</output-path>
+    <root id="archive" name="jServer.jar">
+      <element id="module-output" name="jServer" />
+    </root>
+  </artifact>
+</component>
