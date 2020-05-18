@@ -1,10 +1,13 @@
-package net.munki.jServer;
+package net.munki.jServer.services;
 
 /*
  * PingPongService.java
  *
  * Created on 20 May 2003, 18:36
  */
+
+import net.munki.jServer.ServiceInterface;
+import net.munki.jServer.ServiceListenerInterface;
 
 import java.io.*;
 import java.util.logging.Logger;
