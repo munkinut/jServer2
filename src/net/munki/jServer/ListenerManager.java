@@ -7,6 +7,7 @@ package net.munki.jServer;
  */
 
 import java.io.PrintStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Hashtable;
 import java.util.logging.Logger;
 
@@ -115,32 +116,43 @@ public class ListenerManager extends Thread {
     private ServiceInterface loadService(String serviceName) throws ListenerManagerException {
         logger.info("Loading service " + serviceName + "...");
 
+        ServiceInterface si;
         // need to check whether we're loading a service class
         // or a script.
         // if its a service class do what it's always done,
         // else its a script -> wrap it in an object that
         // implements the ServiceInterface and carry on??
-
         // so if its a service class, do this ->
-        try {
-            Class c = Class.forName(serviceName);
-            @SuppressWarnings("deprecation")
-            ServiceInterface service = (ServiceInterface) c.newInstance();
-            return service;
-        } catch (ClassNotFoundException cnfe) {
-            logger.warning("Failed to load service " + serviceName + " ...");
-            throw new ListenerManagerException("The service class " + serviceName + ".class could not be found.", cnfe);
-        } catch (IllegalAccessException | InstantiationException iae) {
-            logger.warning("Failed to load service " + serviceName + " ...");
-            throw new ListenerManagerException("The service class " + serviceName + ".class could not be instantiated.", iae);
+        if (serviceName.startsWith("net.munki.jServer.services")) {
+            try {
+                Class c = Class.forName(serviceName);
+                si = (ServiceInterface) c.getDeclaredConstructor().newInstance();
+            } catch (ClassNotFoundException cnfe) {
+                logger.warning("Failed to load service " + serviceName + " ...");
+                throw new ListenerManagerException("The service class " + serviceName + ".class could not be found.", cnfe);
+            } catch (IllegalAccessException | InstantiationException iae) {
+                logger.warning("Failed to load service " + serviceName + " ...");
+                throw new ListenerManagerException("The service class " + serviceName + ".class could not be instantiated.", iae);
+            } catch (NoSuchMethodException nme) {
+                logger.warning("Failed to load service " + serviceName + " ...");
+                throw new ListenerManagerException("The service class " + serviceName + ".class could not be instantiated.", nme);
+            } catch (InvocationTargetException ite) {
+                logger.warning("Failed to load service " + serviceName + " ...");
+                throw new ListenerManagerException("The service class " + serviceName + ".class could not be instantiated.", ite);
+            }
+        }
+        else {
+            // else its a script ->
+            // get the script itself to implement the
+            // ServiceInterface and return that.
+
+            si = null;
         }
 
-        // else its a script ->
-        // wrap it in an object that implements ServiceInterface.
-        // alternatively get the script itself to implement the
-        // ServiceInterface and return that.
 
+        return si;
     }
+
 
     @SuppressWarnings("rawtypes")
     private void killListeners() {
