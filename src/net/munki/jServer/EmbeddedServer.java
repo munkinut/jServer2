@@ -60,7 +60,7 @@ public class EmbeddedServer {
             addSpecifiedService(DEFAULT_SERVICE);
         else {
             for (String service : services) {
-                addSpecifiedService(service);
+                    addSpecifiedService(service);
             }
         }
     }

@@ -21,17 +21,20 @@ public class EmbeddedServerRunnerCmd {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        EmbeddedServer es = new EmbeddedServer(12321, getServices(args));
+        es.start();
+    }
+
+    private static String[] getServices(String[] args) {
         String[] services = new String[args.length];
         String servicesLoc = "net.munki.jServer.services";
         int index = 0;
         for(String arg:args) {
             String file = servicesLoc + "." + arg;
             services[index] = file;
-            System.out.println(services[index]);
             index++;
         }
-        EmbeddedServer es = new EmbeddedServer(12321, services);
-        es.start();
+        return services;
     }
 
 }

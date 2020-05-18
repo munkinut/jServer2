@@ -87,6 +87,7 @@ public class ListenerManager extends Thread {
     public void addListener(int port, String serviceName, ServiceListenerInterface sli, PrintStream output) throws ListenerManagerException {
         try {
             logger.info("Adding listener for on port " + port + " ...");
+
             ServiceInterface service = loadService(serviceName);
             if (output != null) service.setOutput(output);
             else service.setOutput(System.out);
@@ -113,6 +114,14 @@ public class ListenerManager extends Thread {
     @SuppressWarnings("rawtypes")
     private ServiceInterface loadService(String serviceName) throws ListenerManagerException {
         logger.info("Loading service " + serviceName + "...");
+
+        // need to check whether we're loading a service class
+        // or a script.
+        // if its a service class do what it's always done,
+        // else its a script -> wrap it in an object that
+        // implements the ServiceInterface and carry on??
+
+        // so if its a service class, do this ->
         try {
             Class c = Class.forName(serviceName);
             @SuppressWarnings("deprecation")
@@ -125,6 +134,12 @@ public class ListenerManager extends Thread {
             logger.warning("Failed to load service " + serviceName + " ...");
             throw new ListenerManagerException("The service class " + serviceName + ".class could not be instantiated.", iae);
         }
+
+        // else its a script ->
+        // wrap it in an object that implements ServiceInterface.
+        // alternatively get the script itself to implement the
+        // ServiceInterface and return that.
+
     }
 
     @SuppressWarnings("rawtypes")
