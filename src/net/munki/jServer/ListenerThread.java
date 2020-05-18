@@ -6,6 +6,7 @@ package net.munki.jServer;
  * Created on 19 May 2003, 16:03
  */
 
+import net.munki.jServer.services.DefaultService;
 import net.munki.util.string.StringTool;
 
 import java.io.IOException;

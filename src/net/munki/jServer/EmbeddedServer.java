@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 
 public class EmbeddedServer {
 
-    private static final String DEFAULT_SERVICE = "net.munki.jServer.DefaultService";
+    private static final String DEFAULT_SERVICE = "net.munki.jServer.services.DefaultService";
     private static final int DEFAULT_PORT = 12321;
 
     private int port;
