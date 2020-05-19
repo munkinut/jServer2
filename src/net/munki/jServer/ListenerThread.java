@@ -65,6 +65,7 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
     private void initSocket(int port) throws ListenerThreadException {
         myPort = port;
         try {
+            logger.info("Initialising socket on port " + port);
             socket = new ServerSocket(port);
             socket.setSoTimeout(TIMEOUT);
         } catch (IOException | SecurityException ioe) {

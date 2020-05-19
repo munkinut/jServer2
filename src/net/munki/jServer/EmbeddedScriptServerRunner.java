@@ -16,7 +16,7 @@ import java.util.ArrayList;
  */
 public class EmbeddedScriptServerRunner {
 
-    private static String scriptLocation = "scripts";
+    private static String scriptsLocation;
     /**
      * Creates a new instance of TestEmbeddedServer
      */
@@ -34,7 +34,9 @@ public class EmbeddedScriptServerRunner {
     }
 
     private static String[] loadScripts() {
-        File dir = new File(scriptLocation);
+        PropertyManager pm = PropertyManager.getInstance();
+        scriptsLocation = pm.getScriptsLocation();
+        File dir = new File(scriptsLocation);
         File[] files = dir.listFiles();
         String[] filenames = new String[files.length];
         int index = 0;

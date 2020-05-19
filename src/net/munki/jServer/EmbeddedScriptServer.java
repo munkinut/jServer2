@@ -10,8 +10,6 @@ import java.util.logging.Logger;
 
 public class EmbeddedScriptServer {
 
-    private static final int DEFAULT_PORT = 12321;
-
     private int port;
     private final ListenerManager LM;
     private final Logger logger;
@@ -24,12 +22,14 @@ public class EmbeddedScriptServer {
     }
 
     private void addServices(ScriptService[] services) {
-            for (ScriptService service : services) {
-                addSpecifiedService(service);
+        logger.info("Adding services");
+        for (ScriptService service : services) {
+            addSpecifiedService(service);
             }
     }
 
     private void addSpecifiedService(ScriptService service) {
+        logger.info("Adding service : "  + service);
         try {
             LM.addListener(nextPort(), service, null, null);
         } catch (ListenerManagerException lme) {
@@ -38,11 +38,13 @@ public class EmbeddedScriptServer {
     }
 
     public void start() {
+        logger.info("start() called.");
         LM.start();
     }
 
     private int nextPort() {
         int returnPort = port;
+        logger.info("Port is " + port);
         port++;
         return returnPort;
     }
