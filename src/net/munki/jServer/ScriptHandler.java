@@ -29,7 +29,7 @@ public class ScriptHandler {
     }
 
     public void handleScript(String name, String description, InputStream is, OutputStream os) {
-        log.info("Script name comes is as : " + name);
+        log.info("Script name comes in as : " + name);
         String command = name;
         if(isGroovyScript(command)) {
             String scriptName = this.pathToScript(command);  // pathToScript presently returns command
