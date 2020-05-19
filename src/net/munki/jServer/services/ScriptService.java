@@ -36,6 +36,7 @@ public class ScriptService {
     /** Creates new ScriptHandler */
     public ScriptService() {
         initLogging();
+        setScriptDescription(("Script service - loads a script and runs it."));
         log.info("ScriptService() called");
         PropertyManager pm = PropertyManager.getInstance();
         scriptPath = pm.getScriptsLocation();
@@ -85,11 +86,11 @@ public class ScriptService {
     }
 
     public String getServiceName() {
-        return "Script Service";
+        return this.getClass().getName();
     }
 
     public String getServiceDescription() {
-        return "Script service - loads a script and runs it.";
+        return this.scriptDescription;
     }
 
     public void addServiceListener(ServiceListenerInterface sli) {
