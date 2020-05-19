@@ -6,7 +6,7 @@ package net.munki.jServer;
  * Created on 19 May 2003, 16:03
  */
 
-import net.munki.jServer.services.DefaultService;
+import net.munki.jServer.services.ScriptService;
 import net.munki.util.string.StringTool;
 
 import java.io.IOException;
@@ -35,30 +35,12 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
     private int myPort;
     @SuppressWarnings("rawtypes")
     private Vector connections;
-    private ServiceInterface service;
+    private ScriptService service;
     // private PrintStream out;
     private Boolean running;
     private Logger logger;
 
-    public ListenerThread() throws ListenerThreadException {
-        initLogging();
-        initConnectionCount();
-        initSocket(DEFAULT_PORT);
-        initConnectionManagement();
-        initService(new DefaultService());
-        initRunning();
-    }
-
-    public ListenerThread(int port) throws ListenerThreadException {
-        initLogging();
-        initConnectionCount();
-        initSocket(port);
-        initConnectionManagement();
-        initService(new DefaultService());
-        initRunning();
-    }
-
-    public ListenerThread(ServiceInterface service) throws ListenerThreadException {
+    public ListenerThread(ScriptService service) throws ListenerThreadException {
         initLogging();
         initConnectionCount();
         initSocket(DEFAULT_PORT);
@@ -67,7 +49,7 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
         initRunning();
     }
 
-    public ListenerThread(int port, ServiceInterface service) throws ListenerThreadException {
+    public ListenerThread(int port, ScriptService service) throws ListenerThreadException {
         initLogging();
         initConnectionCount();
         initSocket(port);
@@ -95,7 +77,7 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
         connections = new Vector();
     }
 
-    private void initService(ServiceInterface s) {
+    private void initService(ScriptService s) {
         service = s;
     }
 

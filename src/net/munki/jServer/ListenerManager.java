@@ -6,6 +6,8 @@ package net.munki.jServer;
  * Created on 21 May 2003, 15:39
  */
 
+import net.munki.jServer.services.ScriptService;
+
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Hashtable;
@@ -84,12 +86,10 @@ public class ListenerManager extends Thread {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public void addListener(int port, String serviceName, ServiceListenerInterface sli, PrintStream output) throws ListenerManagerException {
+    public void addListener(int port, ScriptService service, ServiceListenerInterface sli, PrintStream output) throws ListenerManagerException {
         try {
             logger.info("Adding listener for on port " + port + " ...");
 
-            ServiceInterface service = loadService(serviceName);
             if (output != null) service.setOutput(output);
             else service.setOutput(System.out);
             service.addServiceListener(sli);
@@ -99,6 +99,7 @@ public class ListenerManager extends Thread {
             }
             lt.start();
         } catch (ListenerThreadException ioe) {
+            String serviceName = service.getServiceName();
             logger.warning("Failed to add listener for " + serviceName + "on port " + port + " ...");
             throw new ListenerManagerException("The listener thread for service " + serviceName + " on port " + port + " could not be started.", ioe);
         }
@@ -113,10 +114,10 @@ public class ListenerManager extends Thread {
     }
 
     @SuppressWarnings("rawtypes")
-    private ServiceInterface loadService(String serviceName) throws ListenerManagerException {
+    private ScriptService loadService(String serviceName) throws ListenerManagerException {
         logger.info("Loading service " + serviceName + "...");
 
-        ServiceInterface si;
+        ScriptService si;
         // need to check whether we're loading a service class
         // or a script.
         // if its a service class do what it's always done,
@@ -126,7 +127,7 @@ public class ListenerManager extends Thread {
         if (serviceName.startsWith("net.munki.jServer.services")) {
             try {
                 Class c = Class.forName(serviceName);
-                si = (ServiceInterface) c.getDeclaredConstructor().newInstance();
+                si = (ScriptService) c.getDeclaredConstructor().newInstance();
             } catch (ClassNotFoundException cnfe) {
                 logger.warning("Failed to load service " + serviceName + " ...");
                 throw new ListenerManagerException("The service class " + serviceName + ".class could not be found.", cnfe);
