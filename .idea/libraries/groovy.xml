@@ -63,8 +63,10 @@
       <root url="jar://$PROJECT_DIR$/../../../../apache-groovy-sdk-3.0.3/groovy-3.0.3/lib/ST4-4.1.jar!/" />
       <root url="jar://$PROJECT_DIR$/../../../../apache-groovy-sdk-3.0.3/groovy-3.0.3/lib/testng-6.14.3.jar!/" />
       <root url="jar://$PROJECT_DIR$/../../../../apache-groovy-sdk-3.0.3/groovy-3.0.3/lib/xstream-1.4.11.1.jar!/" />
+      <root url="file://$PROJECT_DIR$/../../../../apache-groovy-sdk-3.0.3/groovy-3.0.3/lib/extras-jaxb" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/../../../../apache-groovy-sdk-3.0.3/groovy-3.0.3/lib/extras-jaxb" recursive="false" />
   </library>
 </component>
