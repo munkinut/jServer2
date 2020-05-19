@@ -29,11 +29,11 @@ public class ScriptHandler {
     }
 
     public void handleScript(String name, String description, InputStream is, OutputStream os) {
+        log.info("Script name comes is as : " + name);
         String command = name;
         if(isGroovyScript(command)) {
-            String script = this.pathToScript(command, "groovy");
-            String scriptName = command + ".groovy";
-            log.info(script);
+            String scriptName = this.pathToScript(command);  // pathToScript presently returns command
+            //String scriptName = command + ".groovy";
             log.info(scriptName);
             ScriptResource scriptResource = new ScriptResource(name, description, is, os);
             String[] roots = new String[]{scriptPath};
@@ -75,8 +75,9 @@ public class ScriptHandler {
         return success;
     }
 
-    private String pathToScript(String command, String extension) {
-        String totalPath = scriptPath + command + "." + extension;
+    private String pathToScript(String command) {
+
+        String totalPath = command;
         log.info("Looking for script at " + totalPath);
         return totalPath;
     }
