@@ -8,9 +8,7 @@ package net.munki.jServer;
 
 import net.munki.jServer.services.ScriptService;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.util.logging.Logger;
 
@@ -24,9 +22,9 @@ public class ConnectionThread extends Thread implements ConnectionThreadInterfac
     private Boolean running;
     private java.util.logging.Logger logger;
 
-    public ConnectionThread(Socket c, ScriptService s) {
-        service = s;
-        client = c;
+    public ConnectionThread(Socket client, ScriptService service) {
+        this.service = service;
+        this.client = client;
         initLogging();
         initRunning();
     }
@@ -48,7 +46,10 @@ public class ConnectionThread extends Thread implements ConnectionThreadInterfac
             try {
                 i = client.getInputStream();
                 o = client.getOutputStream();
-                service.serve(i, o);
+                service.serve(i,o);
+                i.close();
+                o.close();
+
             } catch (IOException ioe) {
                 logger.warning(ioe.toString());
             } finally {

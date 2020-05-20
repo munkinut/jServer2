@@ -1,12 +1,8 @@
 package net.munki.jServer;
 
-// import java.io.PrintStream;
-// import java.io.File;
-
 import net.munki.jServer.services.ScriptService;
 
 import java.util.logging.Logger;
-// import net.munki.util.string.StringTool;
 
 public class EmbeddedScriptServer {
 
@@ -14,21 +10,14 @@ public class EmbeddedScriptServer {
     private final ListenerManager LM;
     private final Logger logger;
 
-    public EmbeddedScriptServer(int port, ScriptService[] services) {
+    public EmbeddedScriptServer(int port, ScriptService service) {
         this.logger = Logger.getLogger(this.getClass().getName());
         LM = new ListenerManager();
         this.port = port;
-        addServices(services);
+        addService(service);
     }
 
-    private void addServices(ScriptService[] services) {
-        logger.info("Adding services");
-        for (ScriptService service : services) {
-            addSpecifiedService(service);
-            }
-    }
-
-    private void addSpecifiedService(ScriptService service) {
+    private void addService(ScriptService service) {
         logger.info("Adding service : "  + service);
         try {
             LM.addListener(nextPort(), service, null, null);

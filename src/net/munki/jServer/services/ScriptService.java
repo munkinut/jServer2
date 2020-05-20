@@ -16,20 +16,11 @@ import java.io.*;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-// Testing git push
-
-// import java.io.PrintStream;
-
 public class ScriptService {
 
     private Logger log;
-    private String scriptName;
-    private String scriptDescription;
     private final String scriptPath;
-
-    // For Groovy scripts
-    private GroovyScriptEngine gse;
-    //Binding binding;
+    private ScriptHandler sh;
 
     private void initLogging() {
         log = Logger.getLogger(this.getClass().getName());
@@ -38,28 +29,33 @@ public class ScriptService {
     /** Creates new ScriptHandler */
     public ScriptService() {
         initLogging();
-        setScriptDescription(("Script service - loads a script and runs it."));
         log.info("ScriptService() called");
         PropertyManager pm = PropertyManager.getInstance();
         scriptPath = pm.getScriptsLocation();
         log.info("scriptPath = " + scriptPath);
+        sh = new ScriptHandler();
     }
 
     public void serve(InputStream i, OutputStream o) {
         log.info(getServiceName() + " running ...");
-        InputStreamReader isr = null;
-        OutputStreamWriter osw = null;
-        PrintWriter pw = null;
-        isr = new InputStreamReader(i);
-        osw = new OutputStreamWriter(o);
-        pw = new PrintWriter(new BufferedWriter(osw));
-        pw.println("Connected to " + getServiceName() + " ...");
-        pw.flush();
 
-            // TODO Load a script and run it
-        ScriptHandler sh = new ScriptHandler();
+        InputStreamReader isr = new InputStreamReader(i);
+        OutputStreamWriter osw = new OutputStreamWriter(o);
+        PrintWriter pw = new PrintWriter(new BufferedWriter(osw));
+        BufferedReader inbound = new BufferedReader(isr);
 
-        sh.handleScript(scriptName, scriptDescription, i, o);
+        String command = "";
+        try {
+            command = inbound.readLine();
+            log.info("Read line. Command was " + command);
+            pw.println("Connected to " + command + " ...");
+            pw.flush();
+        }
+        catch (IOException e) {
+            log.warning("Could not read line from client: " + e.getMessage());
+        }
+
+        sh.handleScript(command, "Could be anything!!", i, o);
 
         pw.println("Disconnecting from " + getServiceName() + " ...");
         pw.flush();
@@ -69,6 +65,7 @@ public class ScriptService {
             log.warning(ie.toString());
         } finally {
             try {
+                if (inbound != null) inbound.close();
                 if (pw != null) pw.close();
                 if (osw != null) osw.close();
                 if (isr != null) isr.close();
@@ -77,22 +74,12 @@ public class ScriptService {
                 log.warning(ioe.toString());
             }
         }
+
     }
 
-    public void setScriptName(String scriptName) {
-        this.scriptName = scriptName;
-    }
-
-    public void setScriptDescription(String scriptDescription) {
-        this.scriptDescription = scriptDescription;
-    }
 
     public String getServiceName() {
         return this.getClass().getName();
-    }
-
-    public String getServiceDescription() {
-        return this.scriptDescription;
     }
 
     public void addServiceListener(ServiceListenerInterface sli) {

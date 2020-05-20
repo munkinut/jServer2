@@ -16,12 +16,6 @@ import java.net.SocketTimeoutException;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-// import java.io.PrintStream;
-// import java.io.File;
-// import java.io.FileReader;
-// import java.io.BufferedReader;
-// import java.util.regex.*;
-
 @SuppressWarnings("SynchronizeOnNonFinalField")
 public class ListenerThread extends Thread implements ListenerThreadInterface {
 
@@ -90,7 +84,6 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
         connectionCount = 0;
     }
 
-    @SuppressWarnings("unused")
     public void run() {
         setRunning(true);
         Socket client = null;

@@ -6,7 +6,6 @@ import groovy.util.ResourceException;
 import groovy.util.ScriptException;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -32,9 +31,9 @@ public class ScriptHandler {
         log.info("Script name comes in as : " + name);
         String command = name;
         if(isGroovyScript(command)) {
-            String scriptName = this.pathToScript(command);  // pathToScript presently returns command
-            //String scriptName = command + ".groovy";
-            log.info(scriptName);
+            String scriptName = this.pathToScript(command);
+            if (!(command.endsWith(".groovy")))
+                command = command + ".groovy";
             ScriptResource scriptResource = new ScriptResource(name, description, is, os);
             String[] roots = new String[]{scriptPath};
             try {
@@ -45,7 +44,7 @@ public class ScriptHandler {
             Binding binding = new Binding();
             binding.setProperty("scriptResource", scriptResource);
             try {
-                gse.run(scriptName, binding);
+                gse.run(command, binding);
             } catch (ResourceException e) {
                 log.warning("ResourceException thrown : " + e.getMessage());
                 e.printStackTrace();
@@ -59,15 +58,14 @@ public class ScriptHandler {
     }
 
     private boolean isGroovyScript(String command) {
-        String extension = "groovy";
         File scriptDir = new File(scriptPath);
         File[] scriptFiles = scriptDir.listFiles();
         boolean success = false;
         for (File scriptFile : Objects.requireNonNull(scriptFiles)) {
             String filename = scriptFile.getName();
             log.info("Script filename = " + filename);
-            if(filename.startsWith(command) && filename.endsWith(extension)) {
-                log.info("filename starts with " + command + " and ends with " + extension);
+            if(filename.startsWith(command)) {
+                log.info("filename starts with " + command);
                 success = true;
                 break;
             }
