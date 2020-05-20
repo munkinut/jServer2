@@ -27,37 +27,9 @@ public class EmbeddedScriptServerRunner {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        String[] scripts = loadScripts();
-        ScriptService[] services = getServices(scripts);
-        EmbeddedScriptServer es = new EmbeddedScriptServer(12321, services);
+        ScriptService service = new ScriptService();
+        EmbeddedScriptServer es = new EmbeddedScriptServer(12321, service);
         es.start();
-    }
-
-    private static String[] loadScripts() {
-        PropertyManager pm = PropertyManager.getInstance();
-        scriptsLocation = pm.getScriptsLocation();
-        File dir = new File(scriptsLocation);
-        File[] files = dir.listFiles();
-        String[] filenames = new String[files.length];
-        int index = 0;
-        for(File file: files) {
-            String filename = file.getName();
-            filenames[index] = filename;
-            index++;
-        }
-        return filenames;
-    }
-
-    private static ScriptService[] getServices(String[] scripts) {
-        ScriptService[] services = new ScriptService[scripts.length];
-        int index = 0;
-        for(String script:scripts) {
-            ScriptService s = new ScriptService();
-            s.setScriptName(script);
-            services[index] = s;
-            index++;
-        }
-        return services;
     }
 
 }

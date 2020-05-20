@@ -13,17 +13,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Hashtable;
 import java.util.logging.Logger;
 
-// import java.io.IOException;
-
 @SuppressWarnings("SynchronizeOnNonFinalField")
 public class ListenerManager extends Thread {
 
-    @SuppressWarnings("rawtypes")
     private final Hashtable listeners;
     private Boolean running;
     private Logger logger;
 
-    @SuppressWarnings("rawtypes")
     public ListenerManager() {
         listeners = new Hashtable();
         running = false;
@@ -50,7 +46,6 @@ public class ListenerManager extends Thread {
         }
     }
 
-    @SuppressWarnings("rawtypes")
     private void skimListeners() {
         logger.info("Skimming listeners ...");
         synchronized (listeners) {
@@ -88,7 +83,7 @@ public class ListenerManager extends Thread {
 
     public void addListener(int port, ScriptService service, ServiceListenerInterface sli, PrintStream output) throws ListenerManagerException {
         try {
-            logger.info("Adding listener for on port " + port + " ...");
+            logger.info("Adding listener on port " + port + " ...");
 
             if (output != null) service.setOutput(output);
             else service.setOutput(System.out);
@@ -113,17 +108,10 @@ public class ListenerManager extends Thread {
         }
     }
 
-    @SuppressWarnings("rawtypes")
     private ScriptService loadService(String serviceName) throws ListenerManagerException {
         logger.info("Loading service " + serviceName + "...");
 
         ScriptService si;
-        // need to check whether we're loading a service class
-        // or a script.
-        // if its a service class do what it's always done,
-        // else its a script -> wrap it in an object that
-        // implements the ServiceInterface and carry on??
-        // so if its a service class, do this ->
         if (serviceName.startsWith("net.munki.jServer.services")) {
             try {
                 Class c = Class.forName(serviceName);
@@ -143,10 +131,6 @@ public class ListenerManager extends Thread {
             }
         }
         else {
-            // else its a script ->
-            // get the script itself to implement the
-            // ServiceInterface and return that.
-
             si = null;
         }
 
@@ -154,8 +138,6 @@ public class ListenerManager extends Thread {
         return si;
     }
 
-
-    @SuppressWarnings("rawtypes")
     private void killListeners() {
         logger.info("Killing listeners ...");
         synchronized (listeners) {
