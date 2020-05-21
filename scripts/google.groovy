@@ -2,8 +2,7 @@
 // note to me - this version is in the src tree
 //
 
-// TODO This is broken
-ArrayList params = scriptResource.getParams();
+params = scriptResource.getParams();
 
 Socket sock;
 BufferedReader input;
@@ -11,11 +10,8 @@ PrintWriter out;
 String buffer = null;
 
 StringBuffer query = new StringBuffer();
-String param;
 
-// TODO Therefore this is also broken
-for (int i = 0; i < params.size(); i++) {
-    param = (String)params.get(i);
+for (String param:params) {
     query.append(param);
     query.append("+");
 }
@@ -25,19 +21,19 @@ try {
     sock = new Socket("www.google.com", 80);
     input = new BufferedReader(new InputStreamReader(sock.getInputStream()));
     out = new PrintWriter(sock.getOutputStream());
-    out.println("GET /search?q=" + query + "&btnI=I'm+feeling+lucky HTTP/1.0\n\n");
+    out.println("GET /search?q=" + query.toString() + "&btnI=I'm+feeling+lucky HTTP/1.0\n\n");
     out.flush();
 
     buffer = input.readLine();
     try {
         while(buffer != null) {
             buffer = input.readLine();
-            if (buffer.startsWith("Location:")) {
+            if ((buffer != null) && (buffer.startsWith("Location:"))) {
                 buffer = buffer.substring(10, buffer.length());
                 if (buffer.startsWith("http://")) {
-                    scriptResource.msgChannel("Google result : " + buffer);
+                    scriptResource.write("Google result : " + buffer + "\r\n");
                 } else {
-                    scriptResource.msgChannel("Google result : no result");
+                    scriptResource.write("Google result : no result" + "\r\n");
                 }
                 break;
             }
