@@ -10,19 +10,17 @@ import net.munki.jServer.service.ServiceListenerInterface;
 import net.munki.jServer.service.ScriptService;
 
 import java.io.PrintStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Hashtable;
 import java.util.logging.Logger;
 
-@SuppressWarnings("SynchronizeOnNonFinalField")
 public class ListenerManager extends Thread {
 
-    private final Hashtable listeners;
+    private final Hashtable<Integer, ListenerThread> listeners;
     private Boolean running;
     private Logger logger;
 
     public ListenerManager() {
-        listeners = new Hashtable();
+        listeners = new Hashtable<>();
         running = false;
         initLogging();
     }
@@ -53,7 +51,7 @@ public class ListenerManager extends Thread {
             java.util.Enumeration keys = listeners.keys();
             while (keys.hasMoreElements()) {
                 Integer key = (Integer) keys.nextElement();
-                ListenerThread lt = (ListenerThread) listeners.get(key);
+                ListenerThread lt = listeners.get(key);
                 if (!lt.isAlive()) {
                     listeners.remove(key);
                     logger.info("Listener thread on port " + key + " removed ...");
@@ -104,39 +102,9 @@ public class ListenerManager extends Thread {
     public void removeListener(int port) {
         logger.info("Removing listener from port " + port + " ...");
         synchronized (listeners) {
-            ListenerThreadInterface lt = (ListenerThreadInterface) listeners.remove(port);
+            ListenerThreadInterface lt = listeners.remove(port);
             lt.kill();
         }
-    }
-
-    private ScriptService loadService(String serviceName) throws ListenerManagerException {
-        logger.info("Loading service " + serviceName + "...");
-
-        ScriptService si;
-        if (serviceName.startsWith("net.munki.jServer.services")) {
-            try {
-                Class c = Class.forName(serviceName);
-                si = (ScriptService) c.getDeclaredConstructor().newInstance();
-            } catch (ClassNotFoundException cnfe) {
-                logger.warning("Failed to load service " + serviceName + " ...");
-                throw new ListenerManagerException("The service class " + serviceName + ".class could not be found.", cnfe);
-            } catch (IllegalAccessException | InstantiationException iae) {
-                logger.warning("Failed to load service " + serviceName + " ...");
-                throw new ListenerManagerException("The service class " + serviceName + ".class could not be instantiated.", iae);
-            } catch (NoSuchMethodException nme) {
-                logger.warning("Failed to load service " + serviceName + " ...");
-                throw new ListenerManagerException("The service class " + serviceName + ".class could not be instantiated.", nme);
-            } catch (InvocationTargetException ite) {
-                logger.warning("Failed to load service " + serviceName + " ...");
-                throw new ListenerManagerException("The service class " + serviceName + ".class could not be instantiated.", ite);
-            }
-        }
-        else {
-            si = null;
-        }
-
-
-        return si;
     }
 
     private void killListeners() {
@@ -145,7 +113,7 @@ public class ListenerManager extends Thread {
             java.util.Enumeration keys = listeners.keys();
             while (keys.hasMoreElements()) {
                 Integer key = (Integer) keys.nextElement();
-                ListenerThread lt = (ListenerThread) listeners.get(key);
+                ListenerThread lt = listeners.get(key);
                 lt.kill();
                 listeners.remove(key);
                 logger.info("Listener thread on port " + key + " removed ...");

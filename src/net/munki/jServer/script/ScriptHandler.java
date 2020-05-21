@@ -76,9 +76,8 @@ public class ScriptHandler {
 
     private String pathToScript(String command) {
 
-        String totalPath = command;
-        log.info("Looking for script at " + totalPath);
-        return totalPath;
+        log.info("Looking for script at " + command);
+        return command;
     }
 
 }

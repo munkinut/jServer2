@@ -17,7 +17,6 @@ import java.net.SocketTimeoutException;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-@SuppressWarnings("SynchronizeOnNonFinalField")
 public class ListenerThread extends Thread implements ListenerThreadInterface {
 
     public static final int TIMEOUT = 15000 * 1000;
@@ -28,8 +27,7 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
 
     private ServerSocket socket;
     private int myPort;
-    @SuppressWarnings("rawtypes")
-    private Vector connections;
+    private Vector<ConnectionThread> connections;
     private ScriptService service;
     // private PrintStream out;
     private Boolean running;
@@ -68,9 +66,8 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
         }
     }
 
-    @SuppressWarnings("rawtypes")
     private void initConnectionManagement() {
-        connections = new Vector();
+        connections = new Vector<>();
     }
 
     private void initService(ScriptService s) {
@@ -100,7 +97,7 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
                 synchronized (socket) {
                     client = socket.accept();
                 }
-                String clientAddr = client.getInetAddress().getHostAddress();
+                //String clientAddr = client.getInetAddress().getHostAddress();
                 logger.info("Connection accepted ...");
                 startService(client);
             } catch (SocketTimeoutException ste) {
@@ -172,7 +169,6 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
         return connectionCount < MAX_CONNECTIONS;
     }
 
-    @SuppressWarnings("unchecked")
     private void addConnection(ConnectionThread ct) {
         logger.info("Adding connection to list...");
         synchronized (connections) {
@@ -201,7 +197,7 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
         logger.info("Cleaning up connections ...");
         synchronized (connections) {
             for (int i = 0; i < connections.size(); i++) {
-                ConnectionThread c = (ConnectionThread) connections.elementAt(i);
+                ConnectionThread c = connections.elementAt(i);
                 if (!c.isAlive()) {
                     removeConnection(c);
                 }

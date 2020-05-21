@@ -19,8 +19,6 @@ public class PropertyManager {
      */
     private PropertiesConfiguration properties = null;
 
-    private final FileBasedConfigurationBuilder<PropertiesConfiguration> builder;
-
     /** The singleton instance
      */
     private static PropertyManager propertyManager;
@@ -30,7 +28,7 @@ public class PropertyManager {
         log.info("PropertyManager() called");
         busy = false;
         Configurations configs = new Configurations();
-        builder = configs.propertiesBuilder("config/jServer.properties");
+        FileBasedConfigurationBuilder<PropertiesConfiguration> builder = configs.propertiesBuilder("config/jServer.properties");
         try {
             properties = builder.getConfiguration();
         } catch (ConfigurationException e) {

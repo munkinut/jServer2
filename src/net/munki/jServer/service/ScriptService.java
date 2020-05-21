@@ -11,15 +11,16 @@ import net.munki.jServer.script.ScriptHandler;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
 public class ScriptService {
 
     private Logger log;
-    private final String scriptPath;
-    private ScriptHandler sh;
+    private final ScriptHandler sh;
+
+    private final List<ServiceListenerInterface> serviceListeners;
 
     private void initLogging() {
         log = Logger.getLogger(this.getClass().getName());
@@ -30,9 +31,10 @@ public class ScriptService {
         initLogging();
         log.info("ScriptService() called");
         PropertyManager pm = PropertyManager.getInstance();
-        scriptPath = pm.getScriptsLocation();
+        String scriptPath = pm.getScriptsLocation();
         log.info("scriptPath = " + scriptPath);
         sh = new ScriptHandler();
+        serviceListeners = new ArrayList<>();
     }
 
     public void serve(InputStream i, OutputStream o) {
@@ -43,9 +45,9 @@ public class ScriptService {
         PrintWriter pw = new PrintWriter(new BufferedWriter(osw));
         BufferedReader inbound = new BufferedReader(isr);
 
-        String commandLine = "";
+        String commandLine;
         String cmd = "";
-        ArrayList<String> paramList = null;
+        ArrayList<String> paramList = new ArrayList<>();
 
         try {
             commandLine = inbound.readLine();
@@ -79,10 +81,10 @@ public class ScriptService {
             log.warning(ie.toString());
         } finally {
             try {
-                if (inbound != null) inbound.close();
-                if (pw != null) pw.close();
-                if (osw != null) osw.close();
-                if (isr != null) isr.close();
+                inbound.close();
+                pw.close();
+                osw.close();
+                isr.close();
                 log.info(getServiceName() + " finished ...");
             } catch (IOException ioe) {
                 log.warning(ioe.toString());
@@ -97,6 +99,7 @@ public class ScriptService {
     }
 
     public void addServiceListener(ServiceListenerInterface sli) {
+        serviceListeners.add(sli);
     }
 
     public void setOutput(PrintStream ps) {

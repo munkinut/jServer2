@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 // import java.io.PrintStream;
 
-@SuppressWarnings("SynchronizeOnNonFinalField")
+
 public class ConnectionThread extends Thread implements ConnectionThreadInterface {
 
     private final ScriptService service;
