@@ -50,6 +50,9 @@ public class ScriptService {
         ArrayList<String> paramList = new ArrayList<>();
 
         try {
+            log.info("Sending greeting.");
+            pw.println("Connected to " + this.getServiceName());
+            pw.flush();
             commandLine = inbound.readLine();
             StringTokenizer st = new StringTokenizer(commandLine);
             paramList = new ArrayList<>();
@@ -74,21 +77,23 @@ public class ScriptService {
         sh.handleScript(cmd, "Could be anything!!", i, o, params);
 
         pw.println("Disconnecting from " + cmd + " ...");
+        pw.println("Disconnecting from " + this.getServiceName() + " ...");
         pw.flush();
+
+        try {
+            inbound.close();
+            pw.close();
+            osw.close();
+            isr.close();
+            log.info(getServiceName() + " finished ...");
+        } catch (IOException e) {
+            log.warning("Could not gracefully close the connection: " + e.getMessage());
+        }
+
         try {
             Thread.sleep(1000);
         } catch (InterruptedException ie) {
             log.warning(ie.toString());
-        } finally {
-            try {
-                inbound.close();
-                pw.close();
-                osw.close();
-                isr.close();
-                log.info(getServiceName() + " finished ...");
-            } catch (IOException ioe) {
-                log.warning(ioe.toString());
-            }
         }
 
     }

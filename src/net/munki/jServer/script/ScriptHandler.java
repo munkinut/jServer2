@@ -64,7 +64,7 @@ public class ScriptHandler {
         boolean success = false;
         for (File scriptFile : Objects.requireNonNull(scriptFiles)) {
             String filename = scriptFile.getName();
-            log.info("Script filename = " + filename);
+            // log.info("Script filename = " + filename);
             if(filename.startsWith(command)) {
                 log.info("filename starts with " + command);
                 success = true;
