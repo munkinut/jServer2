@@ -1,5 +1,4 @@
 // google.groovy - google script for jServer
-// note to me - this version is in the src tree
 //
 
 params = scriptResource.getParams();
