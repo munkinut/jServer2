@@ -42,24 +42,18 @@ public class ConnectionThread extends Thread implements ConnectionThreadInterfac
         InputStream i = null;
         OutputStream o = null;
         if ((client != null) && (!client.isClosed())) {
-            logger.info("Client " + client.getInetAddress().getHostAddress() + " connected ...");
+            String cli = client.getInetAddress().getHostAddress();
+            logger.info("Client " + cli + " connected ...");
             try {
                 i = client.getInputStream();
                 o = client.getOutputStream();
                 service.serve(i,o);
                 i.close();
                 o.close();
+                logger.info("Client " + cli + " disconnected ...");
 
             } catch (IOException ioe) {
                 logger.warning(ioe.toString());
-            } finally {
-                try {
-                    if (i != null) i.close();
-                    if (o != null) o.close();
-                    logger.info("Client " + client.getInetAddress().getHostAddress() + " disconnected ...");
-                } catch (IOException ioe) {
-                    logger.warning(ioe.toString());
-                }
             }
         }
         setRunning(false);
