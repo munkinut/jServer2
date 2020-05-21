@@ -1,9 +1,10 @@
-package net.munki.jServer;
+package net.munki.jServer.script;
 
 import groovy.lang.Binding;
 import groovy.util.GroovyScriptEngine;
 import groovy.util.ResourceException;
 import groovy.util.ScriptException;
+import net.munki.jServer.property.PropertyManager;
 
 import java.io.*;
 import java.util.Objects;

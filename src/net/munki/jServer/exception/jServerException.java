@@ -1,0 +1,7 @@
+package net.munki.jServer.exception;
+
+public class jServerException extends Throwable {
+    public jServerException(String s) {
+
+    }
+}

@@ -1,4 +1,4 @@
-package net.munki.jServer;
+package net.munki.jServer.property;
 
 import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;

@@ -1,4 +1,4 @@
-package net.munki.jServer;
+package net.munki.jServer.listener;
 
 /*
  * ListenerManager.java
@@ -6,7 +6,8 @@ package net.munki.jServer;
  * Created on 21 May 2003, 15:39
  */
 
-import net.munki.jServer.services.ScriptService;
+import net.munki.jServer.service.ServiceListenerInterface;
+import net.munki.jServer.service.ScriptService;
 
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;

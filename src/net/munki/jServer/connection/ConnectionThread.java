@@ -1,4 +1,4 @@
-package net.munki.jServer;
+package net.munki.jServer.connection;
 
 /*
  * Connection.java
@@ -6,7 +6,7 @@ package net.munki.jServer;
  * Created on 21 May 2003, 11:23
  */
 
-import net.munki.jServer.services.ScriptService;
+import net.munki.jServer.service.ScriptService;
 
 import java.io.*;
 import java.net.Socket;

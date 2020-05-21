@@ -20,7 +20,7 @@
  *
 */
 
-package net.munki.jServer;
+package net.munki.jServer.script;
 
 import java.io.DataOutputStream;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package net.munki.jServer;
+package net.munki.jServer.listener;
 
 /*
  * ListenerThread.java
@@ -6,7 +6,8 @@ package net.munki.jServer;
  * Created on 19 May 2003, 16:03
  */
 
-import net.munki.jServer.services.ScriptService;
+import net.munki.jServer.connection.ConnectionThread;
+import net.munki.jServer.service.ScriptService;
 import net.munki.util.string.StringTool;
 
 import java.io.IOException;
