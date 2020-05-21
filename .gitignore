@@ -1,6 +1,8 @@
 /bin/
 /lib/
 /out/
+/logs/
+/dist/lib/
 *.class
 .project
 .settings
