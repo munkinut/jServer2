@@ -48,9 +48,9 @@ public class ListenerManager extends Thread {
     private void skimListeners() {
         logger.info("Skimming listeners ...");
         synchronized (listeners) {
-            java.util.Enumeration keys = listeners.keys();
+            java.util.Enumeration<Integer> keys = listeners.keys();
             while (keys.hasMoreElements()) {
-                Integer key = (Integer) keys.nextElement();
+                Integer key = keys.nextElement();
                 ListenerThread lt = listeners.get(key);
                 if (!lt.isAlive()) {
                     listeners.remove(key);
@@ -110,9 +110,9 @@ public class ListenerManager extends Thread {
     private void killListeners() {
         logger.info("Killing listeners ...");
         synchronized (listeners) {
-            java.util.Enumeration keys = listeners.keys();
+            java.util.Enumeration<Integer> keys = listeners.keys();
             while (keys.hasMoreElements()) {
-                Integer key = (Integer) keys.nextElement();
+                Integer key = keys.nextElement();
                 ListenerThread lt = listeners.get(key);
                 lt.kill();
                 listeners.remove(key);
