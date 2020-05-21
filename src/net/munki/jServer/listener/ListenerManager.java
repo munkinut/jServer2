@@ -11,16 +11,17 @@ import net.munki.jServer.service.ScriptService;
 
 import java.io.PrintStream;
 import java.util.Hashtable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 public class ListenerManager extends Thread {
 
-    private final Hashtable<Integer, ListenerThread> listeners;
+    private final ConcurrentHashMap<Integer, ListenerThread> listeners;
     private Boolean running;
     private Logger logger;
 
     public ListenerManager() {
-        listeners = new Hashtable<>();
+        listeners = new ConcurrentHashMap<>();
         running = false;
         initLogging();
     }
@@ -47,15 +48,13 @@ public class ListenerManager extends Thread {
 
     private void skimListeners() {
         logger.info("Skimming listeners ...");
-        synchronized (listeners) {
-            java.util.Enumeration<Integer> keys = listeners.keys();
-            while (keys.hasMoreElements()) {
-                Integer key = keys.nextElement();
-                ListenerThread lt = listeners.get(key);
-                if (!lt.isAlive()) {
-                    listeners.remove(key);
-                    logger.info("Listener thread on port " + key + " removed ...");
-                }
+        java.util.Enumeration<Integer> keys = listeners.keys();
+        while (keys.hasMoreElements()) {
+            Integer key = keys.nextElement();
+            ListenerThread lt = listeners.get(key);
+            if (!lt.isAlive()) {
+                listeners.remove(key);
+                logger.info("Listener thread on port " + key + " removed ...");
             }
         }
     }
@@ -88,9 +87,7 @@ public class ListenerManager extends Thread {
             else service.setOutput(System.out);
             service.addServiceListener(sli);
             ListenerThread lt = new ListenerThread(port, service);
-            synchronized (listeners) {
-                listeners.put(port, lt);
-            }
+            listeners.put(port, lt);
             lt.start();
         } catch (ListenerThreadException ioe) {
             String serviceName = service.getServiceName();
@@ -101,25 +98,21 @@ public class ListenerManager extends Thread {
 
     public void removeListener(int port) {
         logger.info("Removing listener from port " + port + " ...");
-        synchronized (listeners) {
-            ListenerThreadInterface lt = listeners.remove(port);
-            lt.kill();
-        }
+        ListenerThreadInterface lt = listeners.remove(port);
+        lt.kill();
     }
 
     private void killListeners() {
         logger.info("Killing listeners ...");
-        synchronized (listeners) {
-            java.util.Enumeration<Integer> keys = listeners.keys();
-            while (keys.hasMoreElements()) {
-                Integer key = keys.nextElement();
-                ListenerThread lt = listeners.get(key);
-                lt.kill();
-                listeners.remove(key);
-                logger.info("Listener thread on port " + key + " removed ...");
-            }
+        java.util.Enumeration<Integer> keys = listeners.keys();
+        while (keys.hasMoreElements()) {
+            Integer key = keys.nextElement();
+            ListenerThread lt = listeners.get(key);
+            lt.kill();
+            listeners.remove(key);
+            logger.info("Listener thread on port " + key + " removed ...");
         }
-    }
+   }
 
     public synchronized void kill() {
         logger.info("Kill requested for ListenerManager ...");

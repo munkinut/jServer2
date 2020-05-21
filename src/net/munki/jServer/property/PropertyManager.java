@@ -11,6 +11,9 @@ public class PropertyManager {
 
     final Logger log = Logger.getLogger(this.getClass().getName());
 
+    // TODO PM could be called by a number of threads
+    // therefore needs to synchronize busy. Consider
+    // using Locks or Semaphores.
     /** Busy flag to aid in thread synchronization
      */
     private boolean busy;

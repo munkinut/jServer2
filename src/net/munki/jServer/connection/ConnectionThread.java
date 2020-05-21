@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 
 public class ConnectionThread extends Thread implements ConnectionThreadInterface {
 
+    // TODO Consider replacing synchronizing with a more up to date method
     private final ScriptService service;
     private final Socket client;
     private Boolean running;
@@ -47,7 +48,9 @@ public class ConnectionThread extends Thread implements ConnectionThreadInterfac
             try {
                 i = client.getInputStream();
                 o = client.getOutputStream();
-                service.serve(i,o);
+                synchronized (service) {
+                    service.serve(i, o);
+                }
                 i.close();
                 o.close();
                 logger.info("Client " + cli + " disconnected ...");
