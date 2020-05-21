@@ -22,7 +22,7 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
 
     public static final int TIMEOUT = 15000 * 1000;
     public static final int DEFAULT_PORT = 12321;
-    public static final int MAX_CONNECTIONS = 3;
+    public static final int MAX_CONNECTIONS = 5;
 
     private int connectionCount;
 
