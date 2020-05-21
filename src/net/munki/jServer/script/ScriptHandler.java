@@ -28,14 +28,14 @@ public class ScriptHandler {
         log.info("scriptPath = " + scriptPath);
     }
 
-    public void handleScript(String name, String description, InputStream is, OutputStream os) {
+    public void handleScript(String name, String description, InputStream is, OutputStream os, String[] params) {
         log.info("Script name comes in as : " + name);
         String command = name;
         if(isGroovyScript(command)) {
             String scriptName = this.pathToScript(command);
             if (!(command.endsWith(".groovy")))
                 command = command + ".groovy";
-            ScriptResource scriptResource = new ScriptResource(name, description, is, os);
+            ScriptResource scriptResource = new ScriptResource(name, description, is, os, params);
             String[] roots = new String[]{scriptPath};
             try {
                 gse = new GroovyScriptEngine(roots);

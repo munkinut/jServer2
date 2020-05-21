@@ -10,6 +10,9 @@ import net.munki.jServer.property.PropertyManager;
 import net.munki.jServer.script.ScriptHandler;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
 public class ScriptService {
@@ -40,20 +43,35 @@ public class ScriptService {
         PrintWriter pw = new PrintWriter(new BufferedWriter(osw));
         BufferedReader inbound = new BufferedReader(isr);
 
-        String command = "";
+        String commandLine = "";
+        String cmd = "";
+        ArrayList<String> paramList = null;
+
         try {
-            command = inbound.readLine();
-            log.info("Read line. Command was " + command);
-            pw.println("Connected to " + command + " ...");
+            commandLine = inbound.readLine();
+            StringTokenizer st = new StringTokenizer(commandLine);
+            paramList = new ArrayList<>();
+            while (st.hasMoreTokens()) {
+                paramList.add(st.nextToken());
+            }
+            if (!paramList.isEmpty()) {
+                cmd = paramList.remove(0);
+            }
+
+            log.info("Read line. Command was " + commandLine);
+            pw.println("Connecting to " + cmd + " ...");
             pw.flush();
         }
         catch (IOException e) {
             log.warning("Could not read line from client: " + e.getMessage());
         }
 
-        sh.handleScript(command, "Could be anything!!", i, o);
+        String[] params = new String[paramList.size()];
+        params = paramList.toArray(params);
 
-        pw.println("Disconnecting from " + getServiceName() + " ...");
+        sh.handleScript(cmd, "Could be anything!!", i, o, params);
+
+        pw.println("Disconnecting from " + cmd + " ...");
         pw.flush();
         try {
             Thread.sleep(1000);

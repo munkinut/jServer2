@@ -40,13 +40,15 @@ public class ScriptResource {
     private String description;
     private InputStream is;
     private OutputStream os;
+    private String[] params;
 
     /** Creates new ScriptResource */
-    public ScriptResource(String name, String description, InputStream is, OutputStream os) {
+    public ScriptResource(String name, String description, InputStream is, OutputStream os, String[] params) {
         this.name = name;
         this.description = description;
         this.is = is;
         this.os = os;
+        this.params = params;
     }
 
     public String getName() {
@@ -64,6 +66,8 @@ public class ScriptResource {
     public OutputStream getOs() {
         return os;
     }
+
+    public String[] getParams() { return params; }
 
     public void write(String message) {
         try {
