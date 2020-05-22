@@ -65,6 +65,42 @@ public class PropertyManager {
         return scriptsLocation;
     }
 
+    public synchronized String getHost() {
+        log.info("getHost() called");
+        while (busy.get()) {
+            try {
+                log.info("waiting");
+                wait();
+            }
+            catch (InterruptedException ie) {
+                log.warning("Thread interrupted " + ie.getMessage());
+            }
+        }
+        busy.set(true);
+        String host = properties.getString("Host");
+        busy.set(false);
+        notifyAll();
+        return host;
+    }
+
+    public synchronized String getCommand() {
+        log.info("getCommand() called");
+        while (busy.get()) {
+            try {
+                log.info("waiting");
+                wait();
+            }
+            catch (InterruptedException ie) {
+                log.warning("Thread interrupted " + ie.getMessage());
+            }
+        }
+        busy.set(true);
+        String command = properties.getString("Command");
+        busy.set(false);
+        notifyAll();
+        return command;
+    }
+
     public synchronized int getMaxConnections() {
         log.info("getMaxConnections() called");
         while (busy.get()) {
