@@ -19,7 +19,7 @@ public class TestClient implements Runnable {
     TestClient(String threadName) {
         name = threadName;
         t = new Thread(this, name);
-        System.out.println("New Thread: " + t);
+        System.out.println("New Thread: " + t.getName());
     }
 
     @Override

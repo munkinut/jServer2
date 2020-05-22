@@ -1,33 +1,41 @@
 package net.munki.jServer.test;
 
+import net.munki.jServer.property.PropertyManager;
+
 public class TestClientRunner {
 
     public static void main(String[] args) {
-        TestClient nm1 = new TestClient("One");
-        TestClient nm2 = new TestClient("Two");
-        TestClient nm3 = new TestClient("Three");
 
-        nm1.t.start();
-        nm2.t.start();
-        nm3.t.start();
+        PropertyManager pm = PropertyManager.getInstance();
 
-        System.out.println("Thread One is alive: " + nm1.t.isAlive());
-        System.out.println("Thread two is alive: " + nm2.t.isAlive());
-        System.out.println("Thread Three is alive: " + nm3.t.isAlive());
+        int maxTestClients = pm.getMaxConnections();
 
-        try {
-            System.out.println("Waiting for threads to finish.");
-            nm1.t.join();
-            nm2.t.join();
-            nm3.t.join();
-        }
-        catch (InterruptedException e) {
-            System.out.println("Main thread was interrupted.");
+        TestClient[] testClients = new TestClient[maxTestClients];
+
+        for (int i = 0; i < maxTestClients; i++) {
+            TestClient tc = new TestClient("Thread " + i);
+            testClients[i] = tc;
+            tc.t.start();
+         }
+
+        for (int i = 0; i < maxTestClients; i++) {
+            TestClient tc = testClients[i];
+            System.out.println("Thread " + i + " is alive: " + tc.t.isAlive());
         }
 
-        System.out.println("Thread One is alive: " + nm1.t.isAlive());
-        System.out.println("Thread two is alive: " + nm2.t.isAlive());
-        System.out.println("Thread Three is alive: " + nm3.t.isAlive());
+        for (int i = 0; i < maxTestClients; i++) {
+            try {
+                TestClient tc = testClients[i];
+                tc.t.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        for (int i = 0; i < maxTestClients; i++) {
+            TestClient tc = testClients[i];
+            System.out.println("Thread " + i + " is alive: " + tc.t.isAlive());
+        }
 
         System.out.println("Main thread exiting.");
     }
