@@ -1,5 +1,7 @@
 package net.munki.jServer.test;
 
+import net.munki.jServer.property.PropertyManager;
+
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -12,11 +14,16 @@ public class TestClient implements Runnable {
     DataOutputStream outbound;
     BufferedReader inbound;
 
-    String host = "localhost";
-    int port = 12321;
-    String command = "date";
+    PropertyManager pm;
+    String host;
+    int defaultPort;
+    String command;
 
     TestClient(String threadName) {
+        pm = PropertyManager.getInstance();
+        host = pm.getHost();
+        defaultPort = pm.getDefaultPort();
+        command = pm.getCommand();
         name = threadName;
         t = new Thread(this, name);
         System.out.println("New Thread: " + t.getName());
@@ -27,7 +34,7 @@ public class TestClient implements Runnable {
         try {
 
             // Get a connection to the server
-            socket = new Socket(host, port);
+            socket = new Socket(host, defaultPort);
             outbound = new DataOutputStream(socket.getOutputStream());
             inbound = new BufferedReader(new InputStreamReader(new DataInputStream(socket.getInputStream())));
             // Read a line
