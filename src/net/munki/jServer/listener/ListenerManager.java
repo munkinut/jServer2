@@ -12,17 +12,17 @@ import net.munki.jServer.service.ScriptService;
 import java.io.PrintStream;
 import java.util.Hashtable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
 public class ListenerManager extends Thread {
 
     private final ConcurrentHashMap<Integer, ListenerThread> listeners;
-    private Boolean running;
+    private AtomicBoolean running = new AtomicBoolean(false);
     private Logger logger;
 
     public ListenerManager() {
         listeners = new ConcurrentHashMap<>();
-        running = false;
         initLogging();
     }
 
@@ -61,15 +61,11 @@ public class ListenerManager extends Thread {
 
     private void setRunning(boolean run) {
         if (run) {
-            synchronized (running) {
-                running = Boolean.TRUE;
-                logger.info("Running set to true ...");
-            }
+            running.set(true);
+            logger.info("Running set to true ...");
         } else {
-            synchronized (running) {
-                running = Boolean.FALSE;
-                logger.info("Running set to false ...");
-            }
+            running.set(false);
+            logger.info("Running set to false ...");
         }
     }
 
@@ -107,9 +103,9 @@ public class ListenerManager extends Thread {
         java.util.Enumeration<Integer> keys = listeners.keys();
         while (keys.hasMoreElements()) {
             Integer key = keys.nextElement();
-            ListenerThread lt = listeners.get(key);
+            ListenerThread lt = listeners.remove(key);
             lt.kill();
-            listeners.remove(key);
+            //listeners.remove(key);
             logger.info("Listener thread on port " + key + " removed ...");
         }
    }

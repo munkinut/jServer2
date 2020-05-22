@@ -10,6 +10,7 @@ import net.munki.jServer.service.ScriptService;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
 // import java.io.PrintStream;
@@ -20,22 +21,17 @@ public class ConnectionThread extends Thread implements ConnectionThreadInterfac
     // TODO Consider replacing synchronizing with a more up to date method
     private final ScriptService service;
     private final Socket client;
-    private Boolean running;
+    private AtomicBoolean running = new AtomicBoolean(false);
     private java.util.logging.Logger logger;
 
     public ConnectionThread(Socket client, ScriptService service) {
         this.service = service;
         this.client = client;
         initLogging();
-        initRunning();
     }
 
     private void initLogging() {
         logger = Logger.getLogger(this.getClass().getName());
-    }
-
-    private void initRunning() {
-        running = Boolean.FALSE;
     }
 
     public void run() {
@@ -58,6 +54,11 @@ public class ConnectionThread extends Thread implements ConnectionThreadInterfac
             } catch (IOException ioe) {
                 logger.warning(ioe.toString());
             }
+            try {
+                sleep(100);
+            } catch (InterruptedException e) {
+                logger.warning(e.getMessage());
+            }
         }
         setRunning(false);
         synchronized (this) {
@@ -67,13 +68,11 @@ public class ConnectionThread extends Thread implements ConnectionThreadInterfac
 
     private void setRunning(boolean run) {
         if (run) {
-            synchronized (running) {
-                running = Boolean.TRUE;
-            }
+            running.set(true);
+            logger.info("Running set to true ...");
         } else {
-            synchronized (running) {
-                running = Boolean.FALSE;
-            }
+            running.set(false);
+            logger.info("Running set to false ...");
         }
     }
 
