@@ -90,11 +90,11 @@ public class ScriptService {
             log.warning("Could not gracefully close the connection: " + e.getMessage());
         }
 
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ie) {
-            log.warning(ie.toString());
-        }
+//        try {
+//            Thread.sleep(1000);
+//        } catch (InterruptedException ie) {
+//            log.warning(ie.toString());
+//       }
 
     }
 
