@@ -55,6 +55,11 @@
         </junit>
     </target>
 
+    <target name="run_test_client" description="Runs up the TestClientRunner." depends="dist">
+        <java fork="true" classpathref="run.class.path" classname="net.munki.jServer.test.TestClientRunner">
+        </java>
+    </target>
+
     <target name="init">
         <!-- Create the build directory structure used by compile -->
         <mkdir dir="${build}"/>
