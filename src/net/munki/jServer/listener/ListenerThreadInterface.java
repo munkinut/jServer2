@@ -1,4 +1,4 @@
-package net.munki.jServer;
+package net.munki.jServer.listener;
 
 /*
  * Created on 23-May-2003

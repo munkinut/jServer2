@@ -1,0 +1,186 @@
+<project name="jServer2" default="dist" basedir=".">
+    <description>
+        Build file for jServer2
+    </description>
+
+    <property name="version" value="03_devel"/>
+    <!-- set global properties for this build -->
+    <property name="src" location="src"/>
+    <property name="build" location="out/production/jServer"/>
+    <property name="dist" location="dist"/>
+    <property name="lib" location="lib"/>
+    <property name="groovy" location="C:\Program Files (x86)\Groovy"/>
+    <property name="apache_commons" location="C:\apache-commons"/>
+    <property name="commons_beanutils" location="${apache_commons}\commons-beanutils-1.9.4"/>
+    <property name="commons_codec" location="${apache_commons}\commons-codec-1.14"/>
+    <property name="commons_configuration2" location="${apache_commons}\commons-configuration2-2.7"/>
+    <property name="commons_io" location="${apache_commons}\commons-io-2.6"/>
+    <property name="commons_jexl" location="${apache_commons}\commons-jexl-3.1"/>
+    <property name="commons_jexl" location="${apache_commons}\commons-jxpath-1.3"/>
+    <property name="commons_lang3" location="${apache_commons}\commons-lang3-3.10"/>
+    <property name="commons_logging" location="${apache_commons}\commons-logging-1.2"/>
+    <property name="commons_text" location="${apache_commons}\commons-text-1.8"/>
+    <property name="commons_vfs" location="${apache_commons}\commons-vfs-2.6.0"/>
+    <property name="config" location="config"/>
+    <property name="loggingConfig" value="${user.dir}\\config\\jServer.logging.properties"/>
+    <property name="jServerConfig" value="${user.dir}\\config\\jServer.properties"/>
+
+    <path id="project.class.path">
+        <fileset dir="${lib}" includes="*.jar"/>
+        <fileset dir="${groovy}\lib" includes="*.jar" excludes=""/>
+        <fileset dir="${groovy}\lib\extras-jaxb" includes="*.jar" excludes=""/>
+        <fileset dir="${apache_commons}" includes="**/*.jar">
+            <exclude name="**/*javadoc.jar"/>
+            <exclude name="**/*tests.jar"/>
+            <exclude name="**/*test-sources.jar"/>
+            <exclude name="**/*examples*.jar"/>
+        </fileset>
+        <pathelement location="${build}"/>
+    </path>
+
+    <path id="test.class.path">
+        <fileset dir="${dist}/lib" includes="*.jar"/>
+        <pathelement location="${build}"/>
+    </path>
+
+    <target name="run_tests" description="Runs the Junit tests." depends="dist">
+        <junit printsummary="on" haltonfailure="yes" fork="true">
+            <classpath>
+                <path refid="test.class.path"/>
+            </classpath>
+            <!--<formatter type="brief" usefile="false" />-->
+            <batchtest>
+                <fileset dir="${src}" includes="**/*Test.java" />
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="run_test_client" description="Runs up the TestClientRunner." depends="dist">
+        <java fork="true" classpathref="run.class.path" classname="net.munki.jServer.test.TestClientRunner">
+        </java>
+    </target>
+
+    <target name="init">
+        <!-- Create the build directory structure used by compile -->
+        <mkdir dir="${build}"/>
+    </target>
+
+    <target name="compile" depends="init"
+            description="compile the source">
+        <!-- Compile the Java code from ${src} into ${build} -->
+        <javac includeantruntime="false" srcdir="${src}" destdir="${build}" classpathref="project.class.path">
+            <!--<compilerarg value="-Xlint:unchecked" />-->
+        </javac>
+    </target>
+
+    <target name="dist" depends="compile"
+            description="generate the distribution">
+        <!-- Create the distribution directory -->
+        <mkdir dir="${dist}/lib"/>
+
+        <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
+        <jar jarfile="${dist}/lib/jServer2_${version}.jar"  manifest="Manifest.mf">
+            <fileset dir="${build}"/>
+        </jar>
+
+        <copy todir="${dist}/lib/" >
+            <fileset dir="${lib}">
+                <include name="*.jar"/>
+            </fileset>
+            <fileset dir="${groovy}/lib">
+                <include name="*.jar"/>
+            </fileset>
+            <fileset dir="${groovy}/lib/extras-jaxb">
+                <include name="*.jar"/>
+            </fileset>
+            <fileset dir="${commons_beanutils}" includes="*.jar">
+                <exclude name="*javadoc.jar"/>
+                <exclude name="*tests.jar"/>
+                <exclude name="*sources.jar"/>
+                <exclude name="*test-sources.jar"/>
+                <exclude name="*examples*.jar"/>
+            </fileset>
+            <fileset dir="${commons_codec}" includes="*.jar">
+                <exclude name="*javadoc.jar"/>
+                <exclude name="*tests.jar"/>
+                <exclude name="*sources.jar"/>
+                <exclude name="*test-sources.jar"/>
+                <exclude name="*examples*.jar"/>
+            </fileset>
+            <fileset dir="${commons_configuration2}" includes="*.jar">
+                <exclude name="*javadoc.jar"/>
+                <exclude name="*tests.jar"/>
+                <exclude name="*sources.jar"/>
+                <exclude name="*test-sources.jar"/>
+                <exclude name="*examples*.jar"/>
+            </fileset>
+            <fileset dir="${commons_io}" includes="*.jar">
+                <exclude name="*javadoc.jar"/>
+                <exclude name="*tests.jar"/>
+                <exclude name="*sources.jar"/>
+                <exclude name="*test-sources.jar"/>
+                <exclude name="*examples*.jar"/>
+            </fileset>
+            <fileset dir="${commons_jexl}" includes="*.jar">
+                <exclude name="*javadoc.jar"/>
+                <exclude name="*tests.jar"/>
+                <exclude name="*sources.jar"/>
+                <exclude name="*test-sources.jar"/>
+                <exclude name="*examples*.jar"/>
+            </fileset>
+            <fileset dir="${commons_lang3}" includes="*.jar">
+                <exclude name="*javadoc.jar"/>
+                <exclude name="*tests.jar"/>
+                <exclude name="*sources.jar"/>
+                <exclude name="*test-sources.jar"/>
+                <exclude name="*examples*.jar"/>
+            </fileset>
+            <fileset dir="${commons_logging}" includes="*.jar">
+                <exclude name="*javadoc.jar"/>
+                <exclude name="*tests.jar"/>
+                <exclude name="*sources.jar"/>
+                <exclude name="*test-sources.jar"/>
+                <exclude name="*examples*.jar"/>
+            </fileset>
+            <fileset dir="${commons_text}" includes="*.jar">
+                <exclude name="*javadoc.jar"/>
+                <exclude name="*tests.jar"/>
+                <exclude name="*sources.jar"/>
+                <exclude name="*test-sources.jar"/>
+                <exclude name="*examples*.jar"/>
+            </fileset>
+            <fileset dir="${commons_vfs}" includes="*.jar">
+                <exclude name="*javadoc.jar"/>
+                <exclude name="*tests.jar"/>
+                <exclude name="*sources.jar"/>
+                <exclude name="*test-sources.jar"/>
+                <exclude name="*examples*.jar"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="clean" description="clean up">
+        <!-- Delete the ${build} and ${dist} directory trees -->
+        <delete dir="${build}"/>
+        <delete dir="${dist}"/>
+    </target>
+
+    <path id="run.class.path">
+        <fileset dir="${dist}/lib" includes="*.jar"/>
+    </path>
+
+    <target name="run_jar" description="Runs jServer2 from the generated jar file." depends="dist">
+        <java fork="true" classpathref="run.class.path" jar="${dist}/lib/jServer2_${version}.jar">
+            <jvmarg value="-Djava.util.logging.config.file=${loggingConfig}"/>
+            <jvmarg value="-DjServer.properties.file=${jServerConfig}"/>
+        </java>
+    </target>
+
+    <target name="run" description="Runs jServer from the compiled classes" depends="dist">
+        <java fork="true" classpathref="run.class.path" classname="net.munki.jServer.Main">
+            <jvmarg value="-Djava.util.logging.config.file=${loggingConfig}"/>
+            <jvmarg value="-DjServer.properties.file=${jServerConfig}"/>
+        </java>
+    </target>
+
+</project>

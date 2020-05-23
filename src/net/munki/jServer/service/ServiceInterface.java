@@ -1,4 +1,4 @@
-package net.munki.jServer;
+package net.munki.jServer.service;
 
 /*
  * Service.java

@@ -17,9 +17,8 @@ public class StringTool {
         return sb.toString();
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
     public static String[] uncat(String string) {
-        List list = new ArrayList();
+        List<String> list = new ArrayList<>();
         StringTokenizer st = new StringTokenizer(string);
         while (st.hasMoreTokens()) {
             list.add(st.nextToken());

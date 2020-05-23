@@ -1,20 +1,18 @@
 package net.munki.jServer;
 
-import net.munki.jServer.services.ScriptService;
+import net.munki.jServer.listener.ListenerManager;
+import net.munki.jServer.listener.ListenerManagerException;
+import net.munki.jServer.service.ScriptService;
 
 import java.util.logging.Logger;
 
 public class EmbeddedScriptServer {
 
     private int port;
-    private final ListenerManager LM;
-    private final Logger logger;
+    private ListenerManager LM = null;
+    private Logger logger;
 
-    public EmbeddedScriptServer(int port, ScriptService service) {
-        this.logger = Logger.getLogger(this.getClass().getName());
-        LM = new ListenerManager();
-        this.port = port;
-        addService(service);
+    public EmbeddedScriptServer() {
     }
 
     private void addService(ScriptService service) {
@@ -27,8 +25,6 @@ public class EmbeddedScriptServer {
     }
 
     public void start() {
-        logger.info("start() called.");
-        LM.start();
     }
 
     private int nextPort() {
@@ -38,4 +34,21 @@ public class EmbeddedScriptServer {
         return returnPort;
     }
 
+    public void stop() {
+        if (LM != null) LM.kill();
+        try {
+            LM.join(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void start(int port, ScriptService service) {
+        logger = Logger.getLogger(this.getClass().getName());
+        logger.info("start() called.");
+        LM = new ListenerManager();
+        this.port = port;
+        addService(service);
+        LM.start();
+    }
 }

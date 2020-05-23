@@ -20,33 +20,32 @@
  *
 */
 
-package net.munki.jServer;
+package net.munki.jServer.script;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
 
 
 public class ScriptResource {
 
     final Logger log = Logger.getLogger(this.getClass().getName());
 
-    private String name;
-    private String description;
-    private InputStream is;
-    private OutputStream os;
+    private final String name;
+    private final String description;
+    private final InputStream is;
+    private final OutputStream os;
+    private final String[] params;
 
     /** Creates new ScriptResource */
-    public ScriptResource(String name, String description, InputStream is, OutputStream os) {
+    public ScriptResource(String name, String description, InputStream is, OutputStream os, String[] params) {
         this.name = name;
         this.description = description;
         this.is = is;
         this.os = os;
+        this.params = params;
     }
 
     public String getName() {
@@ -64,6 +63,8 @@ public class ScriptResource {
     public OutputStream getOs() {
         return os;
     }
+
+    public String[] getParams() { return params; }
 
     public void write(String message) {
         try {

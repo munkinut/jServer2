@@ -1,4 +1,4 @@
-package net.munki.jServer;
+package net.munki.jServer.listener;
 
 /*
  * ListenerThread.java
@@ -6,41 +6,39 @@ package net.munki.jServer;
  * Created on 19 May 2003, 16:03
  */
 
-import net.munki.jServer.services.ScriptService;
+import net.munki.jServer.connection.ConnectionThread;
+import net.munki.jServer.property.PropertyManager;
+import net.munki.jServer.service.ScriptService;
 import net.munki.util.string.StringTool;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
-@SuppressWarnings("SynchronizeOnNonFinalField")
 public class ListenerThread extends Thread implements ListenerThreadInterface {
 
-    public static final int TIMEOUT = 15000 * 1000;
-    public static final int DEFAULT_PORT = 10000;
-    public static final int MAX_CONNECTIONS = 3;
+    private static final PropertyManager pm = PropertyManager.getInstance();
 
     private int connectionCount;
 
     private ServerSocket socket;
     private int myPort;
-    @SuppressWarnings("rawtypes")
-    private Vector connections;
+    private CopyOnWriteArrayList<ConnectionThread> connections;
+    // TODO Check if service needs some thread safety
     private ScriptService service;
-    // private PrintStream out;
-    private Boolean running;
+    private AtomicBoolean running = new AtomicBoolean(false);
     private Logger logger;
 
     public ListenerThread(ScriptService service) throws ListenerThreadException {
         initLogging();
         initConnectionCount();
-        initSocket(DEFAULT_PORT);
+        initSocket(pm.getDefaultPort());
         initConnectionManagement();
         initService(service);
-        initRunning();
     }
 
     public ListenerThread(int port, ScriptService service) throws ListenerThreadException {
@@ -49,7 +47,6 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
         initSocket(port);
         initConnectionManagement();
         initService(service);
-        initRunning();
     }
 
     private void initLogging() {
@@ -61,23 +58,18 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
         try {
             logger.info("Initialising socket on port " + port);
             socket = new ServerSocket(port);
-            socket.setSoTimeout(TIMEOUT);
+            socket.setSoTimeout(pm.getTimeout());
         } catch (IOException | SecurityException ioe) {
             throw new ListenerThreadException(ioe);
         }
     }
 
-    @SuppressWarnings("rawtypes")
     private void initConnectionManagement() {
-        connections = new Vector();
+        connections = new CopyOnWriteArrayList<>();
     }
 
     private void initService(ScriptService s) {
         service = s;
-    }
-
-    private void initRunning() {
-        running = Boolean.FALSE;
     }
 
     private void initConnectionCount() {
@@ -88,9 +80,13 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
         setRunning(true);
         Socket client = null;
         while (isRunning()) {
+            String serviceName;
+            synchronized (service) {
+                serviceName = service.getServiceName();
+            }
             logger.info(StringTool.cat(new String[]{
                     "Listening for connection to ",
-                    service.getServiceName(),
+                    serviceName,
                     " on port ",
                     Integer.toString(myPort),
                     " ..."
@@ -99,16 +95,14 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
                 synchronized (socket) {
                     client = socket.accept();
                 }
-                String clientAddr = client.getInetAddress().getHostAddress();
                 logger.info("Connection accepted ...");
                 startService(client);
             } catch (SocketTimeoutException ste) {
                 logger.info(ste.getMessage());
             } catch (IOException | SecurityException ioe) {
                 logger.warning(ioe.getMessage());
-            } finally {
-                cleanup();
             }
+            cleanup();
         }
         try {
             if (client != null) client.close();
@@ -116,9 +110,13 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
             logger.warning(ioe.getMessage());
         }
         setRunning(false);
+        String serviceName;
+        synchronized (service) {
+            serviceName = service.getServiceName();
+        }
         logger.info(StringTool.cat(new String[]{
                 "No longer listening for connection to ",
-                service.getServiceName(),
+                serviceName,
                 " on port ",
                 Integer.toString(myPort),
                 " ..."
@@ -130,62 +128,49 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
 
     private void setRunning(boolean run) {
         if (run) {
-            synchronized (running) {
-                running = Boolean.TRUE;
+                running.set(true);
                 logger.info("Running set to true ...");
-            }
         } else {
-            synchronized (running) {
-                running = Boolean.FALSE;
+                running.set(false);
                 logger.info("Running set to false ...");
-            }
         }
     }
 
     private boolean isRunning() {
-        synchronized (running) {
-            return running.equals(Boolean.TRUE);
-        }
+        return running.get();
     }
 
     private void startService(Socket client) {
         if (connectionsAvailable()) {
+            logger.info("Connections are available...");
             logger.info(StringTool.cat(new String[]{
                     "Connection starting for ",
                     client.getInetAddress().getHostAddress(),
                     " ..."
             }));
-            ConnectionThread connection = new ConnectionThread(client, service);
-            connection.start();
+            ConnectionThread connection;
+            synchronized (service) {
+                connection = new ConnectionThread(client, service);
+            }
             addConnection(connection);
+            connection.start();
         } else {
-            logger.warning(StringTool.cat(new String[]{
-                    "Connection from ",
-                    client.getInetAddress().getHostAddress(),
-                    " rejected.  Connection limit reached."
-            }));
+            logger.warning("There are no more connections available...");
         }
     }
 
     private synchronized boolean connectionsAvailable() {
-        return connectionCount < MAX_CONNECTIONS;
+        return connectionCount < pm.getMaxConnections();
     }
 
-    @SuppressWarnings("unchecked")
-    private void addConnection(ConnectionThread ct) {
+    private synchronized void addConnection(ConnectionThread ct) {
         logger.info("Adding connection to list...");
-        synchronized (connections) {
-            connections.add(ct);
-        }
-        incrementConnectionCount();
+        if (connections.add(ct)) incrementConnectionCount();
     }
 
-    private void removeConnection(ConnectionThread ct) {
+    private synchronized void removeConnection(ConnectionThread ct) {
         logger.info("Removing connection from list...");
-        synchronized (connections) {
-            connections.remove(ct);
-        }
-        decrementConnectionCount();
+        if (connections.remove(ct))  decrementConnectionCount();
     }
 
     private synchronized void incrementConnectionCount() {
@@ -196,28 +181,35 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
         connectionCount--;
     }
 
-    private void cleanup() {
+    private synchronized void cleanup() {
         logger.info("Cleaning up connections ...");
-        synchronized (connections) {
             for (int i = 0; i < connections.size(); i++) {
-                ConnectionThread c = (ConnectionThread) connections.elementAt(i);
+                ConnectionThread c = connections.get(i);
                 if (!c.isAlive()) {
                     removeConnection(c);
+                    c.kill();
+                    try {
+                        c.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
-        }
+
     }
 
     public synchronized void kill() {
-        String serviceName = "";
-        if (service != null) serviceName = service.getServiceName();
-        logger.info(StringTool.cat(new String[]{
-                "Kill requested for ",
-                serviceName,
-                " ..."
-        }));
+        if (socket != null) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         setRunning(false);
-        interrupt();
+        //  this interrupt doesn't do anything because accept() is blocking
+        //  and does not throw an InterruptedException
+        //interrupt();
     }
 
 }

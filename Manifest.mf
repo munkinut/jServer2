@@ -1,0 +1,47 @@
+Manifest-Version: 1.0
+Main-Class: net.munki.jServer.Main
+Class-Path: ant-1.10.7.jar ant-antlr-1.10.7.jar ant-junit-1.10.7.jar
+  ant-launcher-1.10.7.jar bsf-2.4.0.jar codemodel.jar commons-cli-1.4.jar
+  commons-logging-1.2.jar dtd-parser.jar FastInfoset.jar gnu-regexp-1.1.3.jar
+  gpars-1.2.1.jar groovy-3.0.3.jar groovy-ant-3.0.3.jar
+  groovy-astbuilder-3.0.3.jar groovy-bsf-3.0.3.jar groovy-cli-commons-3.0.3.jar
+  groovy-cli-picocli-3.0.3.jar groovy-console-3.0.3.jar
+  groovy-datetime-3.0.3.jar groovy-dateutil-3.0.3.jar
+  groovy-docgenerator-3.0.3.jar groovy-groovydoc-3.0.3.jar
+  groovy-groovysh-3.0.3.jar groovy-jaxb-3.0.3.jar groovy-jmx-3.0.3.jar
+  groovy-json-3.0.3.jar groovy-jsr223-3.0.3.jar groovy-macro-3.0.3.jar
+  groovy-nio-3.0.3.jar groovy-servlet-3.0.3.jar groovy-sql-3.0.3.jar
+  groovy-swing-3.0.3.jar groovy-templates-3.0.3.jar groovy-test-3.0.3.jar
+  groovy-test-junit5-3.0.3.jar groovy-testng-3.0.3.jar groovy-xml-3.0.3.jar
+  groovy-yaml-3.0.3.jar hamcrest-core-1.3.jar istack-commons-runtime.jar
+  istack-commons-tools.jar ivy-2.5.0.jar jackson-annotations-2.10.3.jar
+  jackson-core-2.10.3.jar jackson-databind-2.10.3.jar
+  jackson-dataformat-yaml-2.10.3.jar jansi-1.18.jar javaparser-core-3.15.17.jar
+  javax.activation-api.jar javax.servlet-api-3.0.1.jar jaxb-api.jar
+  jaxb-jxc.jar jaxb-runtime.jar jaxb-xjc.jar jcommander-1.72.jar
+  jline-2.14.6.jar jsp-api-2.0.jar jsr166y-1.7.0.jar junit-4.13.jar
+  junit-jupiter-api-5.6.0.jar junit-jupiter-engine-5.6.0.jar
+  junit-platform-commons-1.6.0.jar junit-platform-engine-1.6.0.jar
+  junit-platform-launcher-1.6.0.jar multiverse-core-0.7.0.jar
+  opentest4j-1.2.0.jar org.abego.treelayout.core-1.0.1.jar qdox-1.12.1.jar
+  relaxng-datatype.jar rngom.jar snakeyaml-1.24.jar ST4-4.1.jar stax-ex.jar
+  testng-6.14.3.jar txw2.jar xsom.jar xstream-1.4.11.1.jar
+  commons-beanutils-1.9.4.jar commons-codec-1.14.jar
+  commons-configuration2-2.7.jar commons-jexl3-3.1.jar commons-jxpath-1.3.jar
+  commons-lang3-3.10.jar commons-logging-1.2.jar commons-text-1.8.jar
+  commons-vfs-2.6.0.jar jackson-databind-2.11.0.jar gnu-regexp-1.1.3.jar
+  javax.servlet-api-3.0.1.jar snakeyaml-1.26.jar spring-core-5.2.6.RELEASE.jar
+  xml-resolver-1.2.jar hamcrest-core-1.3.jar junit-4.13.jar groovy-3.0.3.jar
+  groovy-ant-3.0.3.jar groovy-astbuilder-3.0.3.jar groovy-bsf-3.0.3.jar
+  groovy-cli-commons-3.0.3.jar groovy-cli-picocli-3.0.3.jar
+  groovy-console-3.0.3.jar groovy-datetime-3.0.3.jar
+  groovy-docgenerator-3.0.3.jar groovy-groovydoc-3.0.3.jar
+  groovy-groovysh-3.0.3.jar groovy-jaxb-3.0.3.jar groovy-jmx-3.0.3.jar
+  groovy-json-3.0.3.jar groovy-jsr223-3.0.3.jar groovy-macro-3.0.3.jar
+  groovy-nio-3.0.3.jar groovy-servlet-3.0.3.jar groovy-sql-3.0.3.jar
+  groovy-swing-3.0.3.jar groovy-templates-3.0.3.jar groovy-test-3.0.3.jar
+  groovy-test-junit5-3.0.3.jar groovy-testng-3.0.3.jar groovy-xml-3.0.3.jar
+  groovy-yaml-3.0.3.jar activation-1.1.1.jar jaxb-api-2.3.0.jar
+  jaxb-core-2.3.0.1.jar jaxb-impl-2.3.0.1.jar
+
+

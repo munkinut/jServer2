@@ -1,9 +1,10 @@
-package net.munki.jServer;
+package net.munki.jServer.script;
 
 import groovy.lang.Binding;
 import groovy.util.GroovyScriptEngine;
 import groovy.util.ResourceException;
 import groovy.util.ScriptException;
+import net.munki.jServer.property.PropertyManager;
 
 import java.io.*;
 import java.util.Objects;
@@ -27,14 +28,14 @@ public class ScriptHandler {
         log.info("scriptPath = " + scriptPath);
     }
 
-    public void handleScript(String name, String description, InputStream is, OutputStream os) {
+    public void handleScript(String name, String description, InputStream is, OutputStream os, String[] params) {
         log.info("Script name comes in as : " + name);
         String command = name;
         if(isGroovyScript(command)) {
             String scriptName = this.pathToScript(command);
             if (!(command.endsWith(".groovy")))
                 command = command + ".groovy";
-            ScriptResource scriptResource = new ScriptResource(name, description, is, os);
+            ScriptResource scriptResource = new ScriptResource(name, description, is, os, params);
             String[] roots = new String[]{scriptPath};
             try {
                 gse = new GroovyScriptEngine(roots);
@@ -63,7 +64,7 @@ public class ScriptHandler {
         boolean success = false;
         for (File scriptFile : Objects.requireNonNull(scriptFiles)) {
             String filename = scriptFile.getName();
-            log.info("Script filename = " + filename);
+            // log.info("Script filename = " + filename);
             if(filename.startsWith(command)) {
                 log.info("filename starts with " + command);
                 success = true;
@@ -75,9 +76,8 @@ public class ScriptHandler {
 
     private String pathToScript(String command) {
 
-        String totalPath = command;
-        log.info("Looking for script at " + totalPath);
-        return totalPath;
+        log.info("Looking for script at " + command);
+        return command;
     }
 
 }
