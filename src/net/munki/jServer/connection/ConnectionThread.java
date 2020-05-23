@@ -67,13 +67,7 @@ public class ConnectionThread extends Thread implements ConnectionThreadInterfac
     }
 
     private void setRunning(boolean run) {
-        if (run) {
-            running.set(true);
-            logger.info("Running set to true ...");
-        } else {
-            running.set(false);
-            logger.info("Running set to false ...");
-        }
+            running.set(run);
     }
 
     public synchronized void kill() {
@@ -81,7 +75,7 @@ public class ConnectionThread extends Thread implements ConnectionThreadInterfac
         if (service != null) serviceName = service.getServiceName();
         logger.info("Kill requested for " + serviceName + " connection ...");
         setRunning(false);
-        interrupt();
+        // interrupt();
     }
 
 }

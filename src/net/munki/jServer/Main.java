@@ -3,8 +3,6 @@ package net.munki.jServer;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import java.lang.management.ManagementFactory;
-import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
 
 public class Main {
 

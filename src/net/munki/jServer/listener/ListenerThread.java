@@ -101,9 +101,8 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
                 logger.info(ste.getMessage());
             } catch (IOException | SecurityException ioe) {
                 logger.warning(ioe.getMessage());
-            } finally {
-                cleanup();
             }
+            cleanup();
         }
         try {
             if (client != null) client.close();
@@ -188,23 +187,29 @@ public class ListenerThread extends Thread implements ListenerThreadInterface {
                 ConnectionThread c = connections.get(i);
                 if (!c.isAlive()) {
                     removeConnection(c);
+                    c.kill();
+                    try {
+                        c.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
     }
 
     public synchronized void kill() {
-        String serviceName = "";
-        synchronized(service) {
-            if (service != null) serviceName = service.getServiceName();
-            logger.info(StringTool.cat(new String[]{
-                    "Kill requested for ",
-                    serviceName,
-                    " ..."
-            }));
+        if (socket != null) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         setRunning(false);
-        interrupt();
+        //  this interrupt doesn't do anything because accept() is blocking
+        //  and does not throw an InterruptedException
+        //interrupt();
     }
 
 }

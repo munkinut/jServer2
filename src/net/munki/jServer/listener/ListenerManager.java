@@ -38,11 +38,14 @@ public class ListenerManager extends Thread {
             synchronized (this) {
                 try {
                     logger.info("Listener manager waiting ...");
-                    this.wait();
+                    this.wait(15000);
                 } catch (InterruptedException ie) {
                     logger.info("Listener manager interrupted ...");
                 }
             }
+        }
+        synchronized (this) {
+            this.notifyAll();
         }
     }
 
@@ -60,18 +63,14 @@ public class ListenerManager extends Thread {
     }
 
     private void setRunning(boolean run) {
-        if (run) {
-            running.set(true);
-            logger.info("Running set to true ...");
-        } else {
-            running.set(false);
-            logger.info("Running set to false ...");
+        synchronized (running) {
+            running.set(run);
         }
     }
 
     private boolean isRunning() {
         synchronized (running) {
-            return running.equals(Boolean.TRUE);
+            return running.get();
         }
     }
 
@@ -87,15 +86,20 @@ public class ListenerManager extends Thread {
             lt.start();
         } catch (ListenerThreadException ioe) {
             String serviceName = service.getServiceName();
-            logger.warning("Failed to add listener for " + serviceName + "on port " + port + " ...");
+            logger.warning("Failed to add listener for " + serviceName + " on port " + port + " ...");
             throw new ListenerManagerException("The listener thread for service " + serviceName + " on port " + port + " could not be started.", ioe);
         }
     }
 
     public void removeListener(int port) {
         logger.info("Removing listener from port " + port + " ...");
-        ListenerThreadInterface lt = listeners.remove(port);
+        ListenerThread lt = listeners.remove(port);
         lt.kill();
+        try {
+            lt.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void killListeners() {
@@ -105,7 +109,6 @@ public class ListenerManager extends Thread {
             Integer key = keys.nextElement();
             ListenerThread lt = listeners.remove(key);
             lt.kill();
-            //listeners.remove(key);
             logger.info("Listener thread on port " + key + " removed ...");
         }
    }
@@ -114,7 +117,7 @@ public class ListenerManager extends Thread {
         logger.info("Kill requested for ListenerManager ...");
         killListeners();
         setRunning(false);
-        interrupt();
+        // interrupt();
     }
 
 }

@@ -27,27 +27,30 @@ public class EmbeddedScriptServerRunner implements EmbeddedScriptServerRunnerMXB
     @Override
     public void stop() {
         System.out.println("stop() called...");
-        if ((es != null) && started) {
             started = false;
-            es.stop();
-            es = null;
-            System.exit(0);
-        }
+             if (es != null) es.stop();
+             else {
+                 System.out.println("ES WAS NULL!!");
+                 //es.stop();
+             }
+            //es = null;
+            //System.exit(0);
     }
 
     @Override
     public void start() {
         System.out.println("start() called...");
-        if ((es == null) || (!started)) {
-            int port = pm.getDefaultPort();
-            ScriptService service = new ScriptService();
-            es = new EmbeddedScriptServer(port, service);
-            started = true;
-            es.start();
-        }
-        else {
-            System.out.println("es was not null or was not started...");
-        }
+        int port = pm.getDefaultPort();
+        ScriptService service = new ScriptService();
+        es = new EmbeddedScriptServer();
+        started = true;
+        es.start(port, service);
+    }
+
+    @Override
+    public void quit() {
+        stop();
+        System.exit(0);
     }
 
     @Override
