@@ -40,4 +40,7 @@ public class EmbeddedScriptServer {
         return returnPort;
     }
 
+    public void stop() {
+        // TODO nothing for now
+    }
 }

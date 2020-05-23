@@ -12,23 +12,46 @@ import net.munki.jServer.service.ScriptService;
 /**
  * @author Warren Milburn
  */
-public class EmbeddedScriptServerRunner {
+public class EmbeddedScriptServerRunner implements EmbeddedScriptServerRunnerMXBean{
 
-    private static final PropertyManager pm = PropertyManager.getInstance();
+    private final PropertyManager pm;
+    EmbeddedScriptServer es;
+    boolean started = false;
     /**
      * Creates a new instance of TestEmbeddedServer
      */
     public EmbeddedScriptServerRunner() {
+        pm = PropertyManager.getInstance();
     }
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        int port = pm.getDefaultPort();
-        ScriptService service = new ScriptService();
-        EmbeddedScriptServer es = new EmbeddedScriptServer(port, service);
-        es.start();
+    @Override
+    public void stop() {
+        System.out.println("stop() called...");
+        if ((es != null) && started) {
+            started = false;
+            es.stop();
+            es = null;
+            System.exit(0);
+        }
     }
 
+    @Override
+    public void start() {
+        System.out.println("start() called...");
+        if ((es == null) || (!started)) {
+            int port = pm.getDefaultPort();
+            ScriptService service = new ScriptService();
+            es = new EmbeddedScriptServer(port, service);
+            started = true;
+            es.start();
+        }
+        else {
+            System.out.println("es was not null or was not started...");
+        }
+    }
+
+    @Override
+    public boolean isStarted() {
+        return started;
+    }
 }
