@@ -177,7 +177,7 @@
     </target>
 
     <target name="run" description="Runs jServer from the compiled classes" depends="dist">
-        <java fork="true" classpathref="run.class.path" classname="net.munki.jServer.EmbeddedScriptServerRunner">
+        <java fork="true" classpathref="run.class.path" classname="net.munki.jServer.Main">
             <jvmarg value="-Djava.util.logging.config.file=${loggingConfig}"/>
             <jvmarg value="-DjServer.properties.file=${jServerConfig}"/>
         </java>

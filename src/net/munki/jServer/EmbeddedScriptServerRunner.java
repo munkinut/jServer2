@@ -49,6 +49,7 @@ public class EmbeddedScriptServerRunner implements EmbeddedScriptServerRunnerMXB
 
     @Override
     public void quit() {
+        System.out.println("quit() called...");
         stop();
         System.exit(0);
     }

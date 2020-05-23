@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Main-Class: net.munki.jServer.EmbeddedScriptServerRunner
+Main-Class: net.munki.jServer.Main
 Class-Path: ant-1.10.7.jar ant-antlr-1.10.7.jar ant-junit-1.10.7.jar
   ant-launcher-1.10.7.jar bsf-2.4.0.jar codemodel.jar commons-cli-1.4.jar
   commons-logging-1.2.jar dtd-parser.jar FastInfoset.jar gnu-regexp-1.1.3.jar
